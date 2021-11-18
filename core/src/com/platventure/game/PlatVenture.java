@@ -57,20 +57,17 @@ public class PlatVenture extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg");
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 0);
 
 		world = new World(new Vector2(0, -10f), true);
 
 		debugRenderer = new Box2DDebugRenderer();
 
-		for (int i = 0; i < 16; i++) {
-			for (int j = 0; j < 12; j++) {
-				if (i%2 == j%2) {
-					FabriqueBrique.getBody(world, i, j);
-				}
-			}
-		}
-
+		FabriqueBrique.createBody(world, 8, 5);
+		FabriquePlatCentre.createBody(world, 6, 5);
+		FabriquePlatGauche.createBody(world, 5, 5);
+		FabriquePlatDroite.createBody(world, 7, 5);
 	}
 
 	@Override

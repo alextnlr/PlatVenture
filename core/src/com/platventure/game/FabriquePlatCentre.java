@@ -1,21 +1,17 @@
 package com.platventure.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class FabriqueBrique extends FabriquePlatform {
-    private static FabriqueBrique instance = new FabriqueBrique();
+public class FabriquePlatCentre extends FabriquePlatform{
+    private static FabriquePlatCentre instance = new FabriquePlatCentre();
 
-    private FabriqueBrique() {
-        super();
+    private FabriquePlatCentre() {
         Vector2[] pts = {new Vector2(0, 0), new Vector2(SizeUnit.getUnit(), 0),
-                new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()), new Vector2(0, SizeUnit.getUnit())};
+                new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()*0.75f), new Vector2(0, SizeUnit.getUnit()*0.75f)};
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         fixtureDef.shape = shape;
