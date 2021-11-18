@@ -57,39 +57,20 @@ public class PlatVenture extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg");
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 0);
 
 		world = new World(new Vector2(0, -10f), true);
 
 		debugRenderer = new Box2DDebugRenderer();
 
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		bodyDef.position.set(0, 100);
-		body = world.createBody(bodyDef);
-		FixtureDef fixtureDef = new FixtureDef();
-		//Vector2[] pts = {new Vector2(0f, 0f), new Vector2(0, 200f), new Vector2(200f, 0)};
-		CircleShape shape = new CircleShape();
-		shape.setRadius(20f);
-		//shape.set(pts);
-		fixtureDef.shape = shape;
-		fixtureDef.density = 40f;
-		fixtureDef.restitution = 0.1f;
-		fixtureDef.friction = 0.5f;
-		body.createFixture(fixtureDef);
-		shape.dispose();
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 12; j++) {
+				if (i%2 == j%2) {
+					FabriqueBrique.getBody(world, i, j);
+				}
+			}
+		}
 
-		BodyDef platDef = new BodyDef();
-		platDef.type = BodyDef.BodyType.StaticBody;
-		platDef.position.set(-100f, -200f);
-		platform = world.createBody(platDef);
-		Vector2[] pts2 = {new Vector2(0, 0), new Vector2(0, 100f), new Vector2(200f, 0)};
-		PolygonShape shape2 = new PolygonShape();
-		shape2.set(pts2);
-		FixtureDef platFix = new FixtureDef();
-		platFix.shape = shape2;
-		platFix.friction = 0.8f;
-		platform.createFixture(platFix);
-		shape2.dispose();
 	}
 
 	@Override
@@ -98,7 +79,7 @@ public class PlatVenture extends ApplicationAdapter {
 
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
-		camera.position.set(body.getPosition().x, body.getPosition().y, 0);
+		//camera.position.set(body.getPosition().x, body.getPosition().y, 0);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 
