@@ -20,9 +20,9 @@ import com.platventure.game.fabriques.FabriquePlatGauche;
 // - Diagramme UML
 
 //TODO Etape 1 : Affichages en mode DebugRenderer
-// - Definition camera du monde
-// - Initialisation du moteur physique
-// - Lecture du fichier de niveau avec constructeur de Body
+// - Definition camera du monde v
+// - Initialisation du moteur physique v
+// - Lecture du fichier de niveau avec constructeur de Body v
 // - Construction du Joueur
 // - Controles du joueur
 // - Etat du jeu (score..)
@@ -57,7 +57,7 @@ public class PlatVenture extends ApplicationAdapter {
 
 		debugRenderer = new Box2DDebugRenderer();
 
-		mondePhysique = new MondePhysique();
+		mondePhysique = new MondePhysique("level_001.txt");
 	}
 
 	@Override
@@ -66,7 +66,6 @@ public class PlatVenture extends ApplicationAdapter {
 
 		mondePhysique.getWorld().step(Gdx.graphics.getDeltaTime(), 6, 2);
 
-		//camera.position.set(body.getPosition().x, body.getPosition().y, 0);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 

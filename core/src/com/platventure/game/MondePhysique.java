@@ -17,20 +17,23 @@ public class MondePhysique {
     private char[][] mapLevel;
     private String background;
 
-    private FabriquePlatform[] fabriques;
+    private final FabriquePlatform[] fabriques;
+    private Joueur joueur;
 
-    private World world;
+    private final World world;
 
-    public MondePhysique() {
-        world = new World(new Vector2(0, -10f), true);
+    public MondePhysique(String level) {
+        world = new World(new Vector2(0, 10f*SizeUnit.getUnit()), true);
 
-        getLevelInfos("level_001.txt");
+        getLevelInfos(level);
 
         fabriques = new FabriquePlatform[4];
         fabriques[0] = new FabriqueBrique();
         fabriques[1] = new FabriquePlatGauche();
         fabriques[2] = new FabriquePlatCentre();
         fabriques[3] = new FabriquePlatDroite();
+
+        joueur = new Joueur();
 
         for (int i = 0; i < tailleLevel[1]; i++) {
             for (int j = 0; j < tailleLevel[0]; j++) {
@@ -88,6 +91,9 @@ public class MondePhysique {
             case 'I':
                 fabriques[0].createBody(world, x, y);
                 break;
+
+            case 'P':
+                joueur.createBody(world, x, y);
         }
     }
 }
