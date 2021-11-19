@@ -3,19 +3,20 @@ package com.platventure.game.fabriques;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.SizeUnit;
 
-public class FabriqueBrique extends FabriqueObjetPhysique {
-
-    public FabriqueBrique() {
+public class FabriqueJoyau extends FabriqueObjetPhysique {
+    public FabriqueJoyau() {
         super();
-        Vector2[] pts = {new Vector2(0, 0), new Vector2(SizeUnit.getUnit(), 0),
-                new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()), new Vector2(0, SizeUnit.getUnit())};
-        PolygonShape shape = new PolygonShape();
-        shape.set(pts);
+        CircleShape shape = new CircleShape();
+        shape.setRadius(0.25f*SizeUnit.getUnit());
+        shape.setPosition(new Vector2(0.5f*SizeUnit.getUnit(), 0.5f*SizeUnit.getUnit()));
         fixtureDef.shape = shape;
+
+        fixtureDef.isSensor = true; //Traversable
     }
 
     @Override

@@ -5,10 +5,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.fabriques.FabriqueBrique;
+import com.platventure.game.fabriques.FabriqueEau;
+import com.platventure.game.fabriques.FabriqueJoyau;
 import com.platventure.game.fabriques.FabriquePlatCentre;
 import com.platventure.game.fabriques.FabriquePlatDroite;
 import com.platventure.game.fabriques.FabriquePlatGauche;
-import com.platventure.game.fabriques.FabriquePlatform;
+import com.platventure.game.fabriques.FabriqueObjetPhysique;
+import com.platventure.game.fabriques.FabriqueSortie;
 
 public class MondePhysique {
     private int[] tailleLevel;
@@ -17,7 +20,7 @@ public class MondePhysique {
     private char[][] mapLevel;
     private String background;
 
-    private final FabriquePlatform[] fabriques;
+    private final FabriqueObjetPhysique[] fabriques;
     private Joueur joueur;
 
     private final World world;
@@ -27,11 +30,14 @@ public class MondePhysique {
 
         getLevelInfos(level);
 
-        fabriques = new FabriquePlatform[4];
+        fabriques = new FabriqueObjetPhysique[7];
         fabriques[0] = new FabriqueBrique();
         fabriques[1] = new FabriquePlatGauche();
         fabriques[2] = new FabriquePlatCentre();
         fabriques[3] = new FabriquePlatDroite();
+        fabriques[4] = new FabriqueEau();
+        fabriques[5] = new FabriqueJoyau();
+        fabriques[6] = new FabriqueSortie();
 
         joueur = new Joueur();
 
@@ -94,6 +100,20 @@ public class MondePhysique {
 
             case 'P':
                 joueur.createBody(world, x, y);
+                break;
+
+            case 'W':
+                fabriques[4].createBody(world, x, y);
+                break;
+
+            case '1':
+            case '2':
+                fabriques[5].createBody(world, x, y);
+                break;
+
+            case 'Z':
+                fabriques[6].createBody(world, x, y);
+                break;
         }
     }
 }

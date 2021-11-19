@@ -7,15 +7,16 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.SizeUnit;
 
-public class FabriqueBrique extends FabriqueObjetPhysique {
-
-    public FabriqueBrique() {
+public class FabriqueSortie extends FabriqueObjetPhysique {
+    public FabriqueSortie() {
         super();
         Vector2[] pts = {new Vector2(0, 0), new Vector2(SizeUnit.getUnit(), 0),
                 new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()), new Vector2(0, SizeUnit.getUnit())};
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         fixtureDef.shape = shape;
+
+        fixtureDef.isSensor = true; //Objet traversable
     }
 
     @Override
