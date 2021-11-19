@@ -45,42 +45,34 @@ public class PlatVenture extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	private OrthographicCamera camera;
-	private Body body, platform;
-	private World world;
 	private Box2DDebugRenderer debugRenderer;
+	private MondePhysique mondePhysique;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 0);
 
-		world = new World(new Vector2(0, -10f), true);
-
 		debugRenderer = new Box2DDebugRenderer();
 
-		FabriqueBrique.createBody(world, 8, 5);
-		FabriquePlatCentre.createBody(world, 6, 5);
-		FabriquePlatGauche.createBody(world, 5, 5);
-		FabriquePlatDroite.createBody(world, 7, 5);
+		mondePhysique = new MondePhysique();
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(0, 0, 0, 1);
 
-		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+		mondePhysique.getWorld().step(Gdx.graphics.getDeltaTime(), 6, 2);
 
 		//camera.position.set(body.getPosition().x, body.getPosition().y, 0);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
-		debugRenderer.render(world, camera.combined);
-		//batch.draw(img, 0, 0);
+		debugRenderer.render(mondePhysique.getWorld(), camera.combined);
 		batch.end();
 	}
 	

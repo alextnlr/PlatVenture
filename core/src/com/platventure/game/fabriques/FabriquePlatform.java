@@ -14,4 +14,6 @@ public abstract class FabriquePlatform {
         fixtureDef.restitution = 0.1f;
         fixtureDef.friction = 0.25f;
     }
+
+    public abstract Body createBody(World world, int x, int y);
 }

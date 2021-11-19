@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.SizeUnit;
 
 public class FabriqueBrique extends FabriquePlatform {
-    private static FabriqueBrique instance = new FabriqueBrique();
 
     private FabriqueBrique() {
         super();
@@ -19,12 +18,13 @@ public class FabriqueBrique extends FabriquePlatform {
         fixtureDef.shape = shape;
     }
 
-    public static Body createBody(World world, int x, int y) {
+    @Override
+    public Body createBody(World world, int x, int y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(x*SizeUnit.getUnit(), y*SizeUnit.getUnit());
         Body body = world.createBody(bodyDef);
-        body.createFixture(instance.fixtureDef);
+        body.createFixture(fixtureDef);
         return body;
     }
 }
