@@ -9,7 +9,7 @@ import com.platventure.game.SizeUnit;
 
 public class FabriquePlatCentre extends FabriquePlatform {
 
-    private FabriquePlatCentre() {
+    public FabriquePlatCentre() {
         Vector2[] pts = {new Vector2(0, 0), new Vector2(SizeUnit.getUnit(), 0),
                 new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()*0.75f), new Vector2(0, SizeUnit.getUnit()*0.75f)};
         PolygonShape shape = new PolygonShape();

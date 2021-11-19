@@ -9,7 +9,7 @@ import com.platventure.game.SizeUnit;
 
 public class FabriqueBrique extends FabriquePlatform {
 
-    private FabriqueBrique() {
+    public FabriqueBrique() {
         super();
         Vector2[] pts = {new Vector2(0, 0), new Vector2(SizeUnit.getUnit(), 0),
                 new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()), new Vector2(0, SizeUnit.getUnit())};

@@ -4,6 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.platventure.game.fabriques.FabriqueBrique;
+import com.platventure.game.fabriques.FabriquePlatCentre;
+import com.platventure.game.fabriques.FabriquePlatDroite;
+import com.platventure.game.fabriques.FabriquePlatGauche;
+import com.platventure.game.fabriques.FabriquePlatform;
 
 public class MondePhysique {
     private int[] tailleLevel;
@@ -12,6 +17,8 @@ public class MondePhysique {
     private char[][] mapLevel;
     private String background;
 
+    private FabriquePlatform[] fabriques;
+
     private World world;
 
     public MondePhysique() {
@@ -19,9 +26,15 @@ public class MondePhysique {
 
         getLevelInfos("level_001.txt");
 
+        fabriques = new FabriquePlatform[4];
+        fabriques[0] = new FabriqueBrique();
+        fabriques[1] = new FabriquePlatGauche();
+        fabriques[2] = new FabriquePlatCentre();
+        fabriques[3] = new FabriquePlatDroite();
+
         for (int i = 0; i < tailleLevel[1]; i++) {
             for (int j = 0; j < tailleLevel[0]; j++) {
-
+                createUnit(mapLevel[i][j], j, i);
             }
         }
     }
@@ -50,5 +63,31 @@ public class MondePhysique {
 
     public World getWorld() {
         return world;
+    }
+
+    private void createUnit(char t, int x, int y) {
+        switch (t) {
+            case 'J':
+                fabriques[1].createBody(world, x, y);
+                break;
+
+            case 'K':
+                fabriques[2].createBody(world, x, y);
+                break;
+
+            case 'L':
+                fabriques[3].createBody(world, x, y);
+                break;
+
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+            case 'E':
+            case 'F':
+            case 'I':
+                fabriques[0].createBody(world, x, y);
+                break;
+        }
     }
 }

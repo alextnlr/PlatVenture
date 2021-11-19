@@ -43,7 +43,6 @@ import com.platventure.game.fabriques.FabriquePlatGauche;
 
 public class PlatVenture extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer debugRenderer;
 	private MondePhysique mondePhysique;
@@ -79,6 +78,5 @@ public class PlatVenture extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
 	}
 }
