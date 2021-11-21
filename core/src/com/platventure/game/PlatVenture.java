@@ -2,6 +2,7 @@ package com.platventure.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,7 +24,7 @@ import com.platventure.game.fabriques.FabriquePlatGauche;
 // - Definition camera du monde v
 // - Initialisation du moteur physique v
 // - Lecture du fichier de niveau avec constructeur de Body v
-// - Construction du Joueur
+// - Construction du Joueur v
 // - Controles du joueur
 // - Etat du jeu (score..)
 // - Detection des contacts
@@ -46,6 +47,7 @@ public class PlatVenture extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer debugRenderer;
 	private MondePhysique mondePhysique;
+	Joueur joueur;
 	
 	@Override
 	public void create () {
@@ -58,6 +60,10 @@ public class PlatVenture extends ApplicationAdapter {
 		debugRenderer = new Box2DDebugRenderer();
 
 		mondePhysique = new MondePhysique("level_001.txt");
+
+		joueur = new Joueur();
+
+		mondePhysique.drawWorld(joueur);
 	}
 
 	@Override
@@ -68,6 +74,16 @@ public class PlatVenture extends ApplicationAdapter {
 
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
+
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			joueur.getBody().applyLinearImpulse(new Vector2(joueur.getBody().getMass()*SizeUnit.getUnit(), 0f), joueur.getBody().getWorldCenter(), true);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			joueur.getBody().applyLinearImpulse(new Vector2(-joueur.getBody().getMass()*SizeUnit.getUnit(), 0f), joueur.getBody().getWorldCenter(), true);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			joueur.getBody().applyForceToCenter(new Vector2(0f, -40f*joueur.getBody().getMass()*SizeUnit.getUnit()), true);
+		}
 
 		batch.begin();
 		debugRenderer.render(mondePhysique.getWorld(), camera.combined);

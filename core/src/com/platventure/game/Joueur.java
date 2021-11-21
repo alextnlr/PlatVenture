@@ -12,6 +12,8 @@ public class Joueur {
 
     FixtureDef fixtureDefDiamond, fixtureDefRond;
 
+    Body body;
+
     public Joueur() {
         fixtureDefDiamond = new FixtureDef();
 
@@ -26,6 +28,8 @@ public class Joueur {
 
         fixtureDefDiamond.shape = shapeDiamond;
 
+        //shapeDiamond.dispose();
+
         fixtureDefRond = new FixtureDef();
 
         fixtureDefRond.density = 0.5f;
@@ -37,15 +41,22 @@ public class Joueur {
         circleShape.setPosition(new Vector2(0.25f*SizeUnit.getUnit(), 0.875f*0.86f*SizeUnit.getUnit()));
 
         fixtureDefRond.shape = circleShape;
+
+        //shapeDiamond.dispose();
     }
 
     public Body createBody(World world, int x, int y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x*SizeUnit.getUnit()+0.25f*SizeUnit.getUnit(), y*SizeUnit.getUnit()+0.13f*SizeUnit.getUnit());
-        Body body = world.createBody(bodyDef);
+        bodyDef.position.set(x*SizeUnit.getUnit()+0.25f*SizeUnit.getUnit(), y*SizeUnit.getUnit());
+        bodyDef.fixedRotation = true;
+        body = world.createBody(bodyDef);
         body.createFixture(fixtureDefRond);
         body.createFixture(fixtureDefDiamond);
+        return body;
+    }
+
+    public Body getBody() {
         return body;
     }
 }

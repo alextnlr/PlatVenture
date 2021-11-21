@@ -12,7 +12,7 @@ public class FabriqueJoyau extends FabriqueObjetPhysique {
     public FabriqueJoyau() {
         super();
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.25f*SizeUnit.getUnit());
+        shape.setRadius(0.2f*SizeUnit.getUnit());
         shape.setPosition(new Vector2(0.5f*SizeUnit.getUnit(), 0.5f*SizeUnit.getUnit()));
         fixtureDef.shape = shape;
 

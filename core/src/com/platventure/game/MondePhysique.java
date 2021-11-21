@@ -38,14 +38,6 @@ public class MondePhysique {
         fabriques[4] = new FabriqueEau();
         fabriques[5] = new FabriqueJoyau();
         fabriques[6] = new FabriqueSortie();
-
-        joueur = new Joueur();
-
-        for (int i = 0; i < tailleLevel[1]; i++) {
-            for (int j = 0; j < tailleLevel[0]; j++) {
-                createUnit(mapLevel[i][j], j, i);
-            }
-        }
     }
 
     private void getLevelInfos(String level) {
@@ -67,6 +59,16 @@ public class MondePhysique {
             }
 
             background = fileStringArray[tailleLevel[1]+1];
+        }
+    }
+
+    public void drawWorld(Joueur joueur) {
+        this.joueur = joueur;
+
+        for (int i = 0; i < tailleLevel[1]; i++) {
+            for (int j = 0; j < tailleLevel[0]; j++) {
+                createUnit(mapLevel[i][j], j, i);
+            }
         }
     }
 
