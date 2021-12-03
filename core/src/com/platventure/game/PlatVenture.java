@@ -1,5 +1,7 @@
 package com.platventure.game;
 
+import static com.platventure.game.GlobalVariables.PPM;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -62,9 +64,9 @@ public class PlatVenture extends ApplicationAdapter {
 
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		camera.setToOrtho(true, V_WIDTH/PPM, V_HEIGHT/PPM);
 		hubCam = new OrthographicCamera();
-		hubCam.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		hubCam.setToOrtho(true, V_WIDTH, V_HEIGHT);
 
 		gsm = new GameStateManager(this);
 	}

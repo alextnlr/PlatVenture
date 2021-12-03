@@ -28,8 +28,6 @@ public class Play extends GameState {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
 
-    private OrthographicCamera b2dcam;
-
     private Joueur joueur;
     private LevelManager levelManager;
 
@@ -77,7 +75,7 @@ public class Play extends GameState {
                         body.createFixture(FabriqueObjetPhysique.createFixturePlatDroite());
                         break;
                     case 'P':
-                        joueur.transport(y, x);
+                        joueur.transport(x, y);
                         break;
                     case 'W':
                         body.createFixture(FabriqueObjetPhysique.createFixtureWater());
@@ -92,16 +90,13 @@ public class Play extends GameState {
                 }
             }
         }
-
-        b2dcam = new OrthographicCamera();
-        b2dcam.setToOrtho(true, V_WIDTH / PPM, V_HEIGHT / PPM);
     }
 
     @Override
     public void handleInput() {
         if (InputManager.isPressed(InputManager.BUTTON_UP)) {
             if (ccl.isPlayerOnGround()) {
-                joueur.applyForce(0f, -40f);
+                joueur.applyForce(0f, -50f);
             }
         }
         if (InputManager.isDown(InputManager.BUTTON_RIGHT)) {
@@ -111,7 +106,7 @@ public class Play extends GameState {
         }
         if (InputManager.isDown(InputManager.BUTTON_LEFT)) {
             if (ccl.isPlayerOnGround()) {
-            joueur.applyForce(-1.f, 0);
+                joueur.applyForce(-1.f, 0);
             }
         }
     }
@@ -127,7 +122,7 @@ public class Play extends GameState {
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        box2DDebugRenderer.render(world, b2dcam.combined);
+        box2DDebugRenderer.render(world, camera.combined);
         /*sb.setProjectionMatrix(camera.combined);
         sb.begin();
 

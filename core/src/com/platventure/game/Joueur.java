@@ -48,7 +48,7 @@ public class Joueur {
 
         body.createFixture(fixtureDef).setUserData("player");
 
-        circleShape.setRadius(0.5f*0.125f);
+        circleShape.setRadius(0.75f*0.125f);
         circleShape.setPosition(new Vector2(0.25f, 0.86f));
         fixtureDef.shape = circleShape;
         fixtureDef.filter.categoryBits = GlobalVariables.BIT_PLAYER;
@@ -59,7 +59,7 @@ public class Joueur {
     }
 
     public void transport(float x, float y) {
-        body.setTransform(new Vector2(x, y), 0);
+        body.setTransform(new Vector2(x+0.25f, y), 0);
     }
 
     public void applyForce(float x, float y) {

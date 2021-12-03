@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 
 public class CustomContactListener implements ContactListener {
 
-    private boolean playerIsOnGround;
+    private int playerIsOnGround;
 
     //Appelé lorsque 2 fixtures rentre en contact
     @Override
@@ -18,10 +18,10 @@ public class CustomContactListener implements ContactListener {
         Fixture fb = contact.getFixtureB();
 
         if (fa.getUserData() != null && fa.getUserData().equals("foot")) {
-            playerIsOnGround = true;
+            playerIsOnGround += 1;
         }
         if (fb.getUserData() != null && fb.getUserData().equals("foot")) {
-            playerIsOnGround = true;
+            playerIsOnGround += 1;
         }
     }
 
@@ -32,14 +32,19 @@ public class CustomContactListener implements ContactListener {
         Fixture fb = contact.getFixtureB();
 
         if (fa.getUserData() != null && fa.getUserData().equals("foot")) {
-            playerIsOnGround = false;
+            playerIsOnGround -= 1;
         }
         if (fb.getUserData() != null && fb.getUserData().equals("foot")) {
-            playerIsOnGround = false;
+            playerIsOnGround -= 1;
         }
     }
 
-    public boolean isPlayerOnGround() { return playerIsOnGround; }
+    public boolean isPlayerOnGround() {
+        boolean onGround = true;
+        if (playerIsOnGround == 0)
+            onGround = false;
+        return onGround;
+    }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
