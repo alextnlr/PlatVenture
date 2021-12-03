@@ -5,13 +5,12 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.platventure.game.SizeUnit;
 
 public class FabriquePlatDroite extends FabriqueObjetPhysique {
 
     public FabriquePlatDroite() {
-        Vector2[] pts = {new Vector2(0, 0), new Vector2(SizeUnit.getUnit(), 0),
-                new Vector2(SizeUnit.getUnit(), SizeUnit.getUnit()*0.5f),new Vector2(SizeUnit.getUnit()*0.5f, SizeUnit.getUnit()*0.75f) , new Vector2(0, SizeUnit.getUnit()*0.75f)};
+        Vector2[] pts = {new Vector2(0, 0), new Vector2(1.f, 0),
+                new Vector2(1.f, 0.5f),new Vector2(0.5f, 0.75f) , new Vector2(0, 0.75f)};
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         fixtureDef.shape = shape;
@@ -20,7 +19,7 @@ public class FabriquePlatDroite extends FabriqueObjetPhysique {
     public Body createBody(World world, int x, int y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(x*SizeUnit.getUnit(), y*SizeUnit.getUnit());
+        bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         return body;

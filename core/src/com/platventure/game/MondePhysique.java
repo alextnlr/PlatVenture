@@ -26,7 +26,7 @@ public class MondePhysique {
     private final World world;
 
     public MondePhysique(String level) {
-        world = new World(new Vector2(0, 10f*SizeUnit.getUnit()), true);
+        world = new World(new Vector2(0.f, 10.f), true);
 
         getLevelInfos(level);
 

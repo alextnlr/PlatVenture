@@ -2,19 +2,12 @@ package com.platventure.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.platventure.game.fabriques.FabriqueBrique;
-import com.platventure.game.fabriques.FabriquePlatCentre;
-import com.platventure.game.fabriques.FabriquePlatDroite;
-import com.platventure.game.fabriques.FabriquePlatGauche;
+import com.platventure.game.handlers.GameStateManager;
+import com.platventure.game.handlers.InputListener;
+import com.platventure.game.handlers.InputManager;
 
 
 //TODO Etape 0 :
@@ -43,55 +36,56 @@ import com.platventure.game.fabriques.FabriquePlatGauche;
 
 
 public class PlatVenture extends ApplicationAdapter {
-	SpriteBatch batch;
+
+	public static final String TITLE = "PlatVenture";
+	public static final int V_WIDTH = 1024;
+	public static final int V_HEIGHT = 768;
+	public static final int SCALE = 1;
+
+	public static final float STEP = 1/60.f;
+	private float accum;
+
+	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private OrthographicCamera hubCam;
 	private Box2DDebugRenderer debugRenderer;
-	private MondePhysique mondePhysique;
-	Joueur joueur;
-	
+
+	private GameStateManager gsm;
+
+	InputListener inputListener;
+
 	@Override
 	public void create () {
+
+		inputListener = new InputListener();
+		Gdx.input.setInputProcessor(inputListener);
+
 		batch = new SpriteBatch();
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, V_WIDTH, V_HEIGHT);
+		hubCam = new OrthographicCamera();
+		hubCam.setToOrtho(false, V_WIDTH, V_HEIGHT);
 
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 0);
-
-		debugRenderer = new Box2DDebugRenderer();
-
-		mondePhysique = new MondePhysique("level_001.txt");
-
-		joueur = new Joueur();
-
-		mondePhysique.drawWorld(joueur);
+		gsm = new GameStateManager(this);
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(0, 0, 0, 1);
-
-		mondePhysique.getWorld().step(Gdx.graphics.getDeltaTime(), 6, 2);
-
-		camera.update();
-		batch.setProjectionMatrix(camera.combined);
-
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			joueur.getBody().applyLinearImpulse(new Vector2(joueur.getBody().getMass()*SizeUnit.getUnit(), 0f), joueur.getBody().getWorldCenter(), true);
+		accum += Gdx.graphics.getDeltaTime();
+		while (accum >= STEP) {
+			accum -= STEP;
+			gsm.update(STEP);
+			gsm.render();
+			InputManager.update();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			joueur.getBody().applyLinearImpulse(new Vector2(-joueur.getBody().getMass()*SizeUnit.getUnit(), 0f), joueur.getBody().getWorldCenter(), true);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			joueur.getBody().applyForceToCenter(new Vector2(0f, -40f*joueur.getBody().getMass()*SizeUnit.getUnit()), true);
-		}
-
-		batch.begin();
-		debugRenderer.render(mondePhysique.getWorld(), camera.combined);
-		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
 	}
+
+	public SpriteBatch getBatch() { return batch; }
+	public OrthographicCamera getCamera() { return camera; }
+	public OrthographicCamera getHubCam() { return hubCam; }
 }
