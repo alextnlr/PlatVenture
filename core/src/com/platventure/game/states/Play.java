@@ -16,6 +16,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.GlobalVariables;
+import com.platventure.game.Joueur;
+import com.platventure.game.fabriques.FabriqueObjetPhysique;
+import com.platventure.game.fabriques.LevelManager;
 import com.platventure.game.handlers.CustomContactListener;
 import com.platventure.game.handlers.GameStateManager;
 import com.platventure.game.handlers.InputManager;
@@ -27,7 +30,8 @@ public class Play extends GameState {
 
     private OrthographicCamera b2dcam;
 
-    private Body playerBody;
+    private Joueur joueur;
+    private LevelManager levelManager;
 
     private CustomContactListener ccl;
 
@@ -40,58 +44,54 @@ public class Play extends GameState {
 
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        //Test Platform
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(500/PPM, 500/PPM);
-        bdef.type = BodyDef.BodyType.StaticBody;
-        Body body = world.createBody(bdef);
+        joueur = new Joueur(world);
+        levelManager = new LevelManager("level_001.txt");
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(500/PPM, 5/PPM);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        fixtureDef.filter.maskBits = GlobalVariables.BIT_PLAYER;
-        body.createFixture(fixtureDef);
-
-        //Test perso
-        bdef.position.set(500/PPM, 200/PPM);
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        bdef.fixedRotation = true;
-        playerBody = world.createBody(bdef);
-
-        fixtureDef.density = 0.5f;
-        fixtureDef.restitution = 0.1f;
-        fixtureDef.friction = 0.5f;
-        PolygonShape shapeDiamond = new PolygonShape();
-        Vector2[] ptsDiamond = {new Vector2(0.25f, 0), new Vector2(0.5f, 0.86f*0.5f),
-                new Vector2(0.25f, 0.86f*0.75f), new Vector2(0, 0.86f*0.5f)};
-        shapeDiamond.set(ptsDiamond);
-        fixtureDef.shape = shapeDiamond;
-        fixtureDef.filter.categoryBits = GlobalVariables.BIT_PLAYER;
-        fixtureDef.filter.maskBits = GlobalVariables.BIT_GROUND;
-        playerBody.createFixture(fixtureDef).setUserData("player");
-
-
-        fixtureDef.density = 0.5f;
-        fixtureDef.restitution = 0.1f;
-        fixtureDef.friction = 0.5f;
-        CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(0.86f*0.125f);
-        circleShape.setPosition(new Vector2(0.25f, 0.875f*0.86f));
-
-        fixtureDef.shape = circleShape;
-        fixtureDef.filter.categoryBits = GlobalVariables.BIT_PLAYER;
-        fixtureDef.filter.maskBits = GlobalVariables.BIT_GROUND;
-        playerBody.createFixture(fixtureDef).setUserData("player");
-
-        circleShape.setRadius(0.5f*0.125f);
-        circleShape.setPosition(new Vector2(0.25f, 0.86f));
-        fixtureDef.shape = circleShape;
-        fixtureDef.filter.categoryBits = GlobalVariables.BIT_PLAYER;
-        fixtureDef.filter.maskBits = GlobalVariables.BIT_GROUND;
-        fixtureDef.isSensor = true;
-        playerBody.createFixture(fixtureDef).setUserData("foot");
+        char[][] map = levelManager.getLevelInfos();
+        int[] mapSize = levelManager.getTailleLevel();
+        BodyDef bodyDef = new BodyDef();
+        for (int x = 0; x < mapSize[0]; x++) {
+            for (int y = 0; y < mapSize[1]; y++) {
+                bodyDef.position.set(x, y);
+                bodyDef.type = BodyDef.BodyType.StaticBody;
+                Body body = world.createBody(bodyDef);
+                switch (map[y][x]) {
+                    case 'A':
+                    case 'B':
+                    case 'C':
+                    case 'D':
+                    case 'E':
+                    case 'F':
+                    case 'G':
+                    case 'H':
+                    case 'I':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureBrique());
+                        break;
+                    case 'J':
+                        body.createFixture(FabriqueObjetPhysique.createFixturePlatGauche());
+                        break;
+                    case 'K':
+                        body.createFixture(FabriqueObjetPhysique.createFixturePlatCentre());
+                        break;
+                    case 'L':
+                        body.createFixture(FabriqueObjetPhysique.createFixturePlatDroite());
+                        break;
+                    case 'P':
+                        joueur.transport(y, x);
+                        break;
+                    case 'W':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureWater());
+                        break;
+                    case '1':
+                    case '2':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux());
+                        break;
+                    case 'Z':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureSortie());
+                        break;
+                }
+            }
+        }
 
         b2dcam = new OrthographicCamera();
         b2dcam.setToOrtho(true, V_WIDTH / PPM, V_HEIGHT / PPM);
@@ -101,17 +101,17 @@ public class Play extends GameState {
     public void handleInput() {
         if (InputManager.isPressed(InputManager.BUTTON_UP)) {
             if (ccl.isPlayerOnGround()) {
-                playerBody.applyForceToCenter(0, -40.f, true);
+                joueur.applyForce(0f, -40f);
             }
         }
         if (InputManager.isDown(InputManager.BUTTON_RIGHT)) {
             if (ccl.isPlayerOnGround()) {
-                playerBody.applyForceToCenter(1.f, 0, true);
+                joueur.applyForce(1.f, 0);
             }
         }
         if (InputManager.isDown(InputManager.BUTTON_LEFT)) {
             if (ccl.isPlayerOnGround()) {
-            playerBody.applyForceToCenter(-1.f, 0, true);
+            joueur.applyForce(-1.f, 0);
             }
         }
     }
