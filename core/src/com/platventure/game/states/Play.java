@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.platventure.game.GlobalVariables;
 import com.platventure.game.Joueur;
 import com.platventure.game.fabriques.FabriqueObjetPhysique;
@@ -82,8 +83,10 @@ public class Play extends GameState {
                         body.createFixture(FabriqueObjetPhysique.createFixtureWater()).setUserData("water");
                         break;
                     case '1':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau1");
+                        break;
                     case '2':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau");
+                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau2");
                         break;
                     case 'Z':
                         body.createFixture(FabriqueObjetPhysique.createFixtureSortie()).setUserData("sortie");
@@ -97,7 +100,7 @@ public class Play extends GameState {
     public void handleInput() {
         if (InputManager.isPressed(InputManager.BUTTON_UP)) {
             if (ccl.isPlayerOnGround()) {
-                joueur.applyForce(0f, -50f);
+                joueur.applyForce(0f, -45f);
             }
         }
         if (InputManager.isDown(InputManager.BUTTON_RIGHT)) {
@@ -118,6 +121,23 @@ public class Play extends GameState {
 
         world.step(dt, 6, 2);
 
+        //remove crystals
+        Array<Body> joyaux1 = ccl.getJoyaux1ToRemove();
+        for (Body joyau : joyaux1) {
+            world.destroyBody(joyau);
+            joueur.addScore(1);
+            System.out.println(joueur.getScore());
+        }
+        joyaux1.clear();
+        Array<Body> joyaux2 = ccl.getJoyaux2ToRemove();
+        for (Body joyau : joyaux2) {
+            world.destroyBody(joyau);
+            joueur.addScore(2);
+            System.out.println(joueur.getScore());
+        }
+        joyaux2.clear();
+
+        //set camera position
         camera.position.set(joueur.getPosition(), 0);
         if (camera.position.x + camera.viewportWidth/2f > (float) mapSize[0]) {
             camera.position.set((float) mapSize[0]-camera.viewportWidth/2f, camera.position.y, 0);

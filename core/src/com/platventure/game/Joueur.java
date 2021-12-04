@@ -74,5 +74,9 @@ public class Joueur {
 
     public void resetScore() { this.score = 0; }
 
+    public int getScore() {
+        return score;
+    }
+
     public Vector2 getPosition() { return body.getPosition(); }
 }
