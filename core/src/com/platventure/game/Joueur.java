@@ -12,7 +12,9 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Joueur {
 
-    Body body;
+    private Body body;
+
+    private int score;
 
     public Joueur(World world) {
         BodyDef bodyDef = new BodyDef();
@@ -56,6 +58,8 @@ public class Joueur {
         fixtureDef.isSensor = true;
 
         body.createFixture(fixtureDef).setUserData("foot");
+
+        score = 0;
     }
 
     public void transport(float x, float y) {
@@ -65,4 +69,10 @@ public class Joueur {
     public void applyForce(float x, float y) {
         body.applyForceToCenter(x, y, true);
     }
+
+    public void addScore(int score) { this.score += score; }
+
+    public void resetScore() { this.score = 0; }
+
+    public Vector2 getPosition() { return body.getPosition(); }
 }

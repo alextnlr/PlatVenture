@@ -20,7 +20,7 @@ import com.platventure.game.handlers.InputManager;
 // - Initialisation du moteur physique v
 // - Lecture du fichier de niveau avec constructeur de Body v
 // - Construction du Joueur v
-// - Controles du joueur
+// - Controles du joueur v
 // - Etat du jeu (score..)
 // - Detection des contacts
 
@@ -50,7 +50,6 @@ public class PlatVenture extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private OrthographicCamera hubCam;
-	private Box2DDebugRenderer debugRenderer;
 
 	private GameStateManager gsm;
 

@@ -65,8 +65,8 @@ public class FabriqueObjetPhysique {
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = GlobalVariables.BIT_PLAYER;
+
+        instance.fixtureDef.isSensor = false;
 
         return instance.fixtureDef;
     }
@@ -79,8 +79,8 @@ public class FabriqueObjetPhysique {
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = GlobalVariables.BIT_PLAYER;
+
+        instance.fixtureDef.isSensor = false;
 
         return instance.fixtureDef;
     }
@@ -93,8 +93,8 @@ public class FabriqueObjetPhysique {
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = GlobalVariables.BIT_PLAYER;
+
+        instance.fixtureDef.isSensor = false;
 
         return instance.fixtureDef;
     }
@@ -107,8 +107,8 @@ public class FabriqueObjetPhysique {
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = GlobalVariables.BIT_PLAYER;
+
+        instance.fixtureDef.isSensor = false;
 
         return instance.fixtureDef;
     }
@@ -121,8 +121,8 @@ public class FabriqueObjetPhysique {
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = 0;
+
+        instance.fixtureDef.isSensor = true;
 
         return instance.fixtureDef;
     }
@@ -134,8 +134,8 @@ public class FabriqueObjetPhysique {
         shape.setRadius(0.2f);
         shape.setPosition(new Vector2(0.5f, 0.5f));
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = 0;
+
+        instance.fixtureDef.isSensor = true;
 
         return instance.fixtureDef;
     }
@@ -148,8 +148,8 @@ public class FabriqueObjetPhysique {
         PolygonShape shape = new PolygonShape();
         shape.set(pts);
         instance.fixtureDef.shape = shape;
-        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
-        instance.fixtureDef.filter.maskBits = 0;
+
+        instance.fixtureDef.isSensor = true;
 
         return instance.fixtureDef;
     }
@@ -162,5 +162,7 @@ public class FabriqueObjetPhysique {
         instance.fixtureDef.density = 1f;
         instance.fixtureDef.restitution = 0.1f;
         instance.fixtureDef.friction = 0.25f;
+        instance.fixtureDef.filter.categoryBits = GlobalVariables.BIT_GROUND;
+        instance.fixtureDef.filter.maskBits = GlobalVariables.BIT_PLAYER;
     }
 }

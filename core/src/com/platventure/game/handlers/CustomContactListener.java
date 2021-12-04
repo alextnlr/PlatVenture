@@ -23,6 +23,27 @@ public class CustomContactListener implements ContactListener {
         if (fb.getUserData() != null && fb.getUserData().equals("foot")) {
             playerIsOnGround += 1;
         }
+
+        if(fa.getUserData() != null && fa.getUserData().equals("water")) {
+            System.out.println("water");
+        }
+        if(fb.getUserData() != null && fb.getUserData().equals("water")) {
+            System.out.println("water");
+        }
+
+        if(fa.getUserData() != null && fa.getUserData().equals("joyau")) {
+            System.out.println("joyau");
+        }
+        if(fb.getUserData() != null && fb.getUserData().equals("joyau")) {
+            System.out.println("joyau");
+        }
+
+        if(fa.getUserData() != null && fa.getUserData().equals("sortie")) {
+            System.out.println("sortie");
+        }
+        if(fb.getUserData() != null && fb.getUserData().equals("sortie")) {
+            System.out.println("sortie");
+        }
     }
 
     //Appelé lorsque 2 fixtures ne sont plus en contact

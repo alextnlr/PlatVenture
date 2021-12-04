@@ -32,6 +32,7 @@ public class Play extends GameState {
     private LevelManager levelManager;
 
     private CustomContactListener ccl;
+    private int[] mapSize;
 
     public Play(GameStateManager gsm) {
         super(gsm);
@@ -43,10 +44,10 @@ public class Play extends GameState {
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         joueur = new Joueur(world);
-        levelManager = new LevelManager("level_001.txt");
+        levelManager = new LevelManager("levels/level_001.txt");
 
         char[][] map = levelManager.getLevelInfos();
-        int[] mapSize = levelManager.getTailleLevel();
+        mapSize = levelManager.getTailleLevel();
         BodyDef bodyDef = new BodyDef();
         for (int x = 0; x < mapSize[0]; x++) {
             for (int y = 0; y < mapSize[1]; y++) {
@@ -78,14 +79,14 @@ public class Play extends GameState {
                         joueur.transport(x, y);
                         break;
                     case 'W':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureWater());
+                        body.createFixture(FabriqueObjetPhysique.createFixtureWater()).setUserData("water");
                         break;
                     case '1':
                     case '2':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux());
+                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau");
                         break;
                     case 'Z':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureSortie());
+                        body.createFixture(FabriqueObjetPhysique.createFixtureSortie()).setUserData("sortie");
                         break;
                 }
             }
@@ -116,6 +117,19 @@ public class Play extends GameState {
         handleInput();
 
         world.step(dt, 6, 2);
+
+        camera.position.set(joueur.getPosition(), 0);
+        if (camera.position.x + camera.viewportWidth/2f > (float) mapSize[0]) {
+            camera.position.set((float) mapSize[0]-camera.viewportWidth/2f, camera.position.y, 0);
+        } else if (camera.position.x - camera.viewportWidth/2f < 0) {
+            camera.position.set(camera.viewportWidth/2f, camera.position.y, 0);
+        }
+        if (camera.position.y + camera.viewportHeight/2f > (float) mapSize[1]) {
+            camera.position.set(camera.position.x,(float) mapSize[1]-camera.viewportHeight/2f, 0);
+        } else if (camera.position.y - camera.viewportHeight/2f < 0) {
+            camera.position.set(camera.position.x,camera.viewportHeight/2f, 0);
+        }
+        camera.update();
     }
 
     @Override
@@ -123,10 +137,11 @@ public class Play extends GameState {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         box2DDebugRenderer.render(world, camera.combined);
-        /*sb.setProjectionMatrix(camera.combined);
+
+        sb.setProjectionMatrix(camera.combined);
         sb.begin();
 
-        sb.end();*/
+        sb.end();
     }
 
     @Override
