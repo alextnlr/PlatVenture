@@ -34,6 +34,7 @@ public class Play extends GameState {
 
     private CustomContactListener ccl;
     private int[] mapSize;
+    private char[][] map;
 
     public Play(GameStateManager gsm) {
         super(gsm);
@@ -47,53 +48,10 @@ public class Play extends GameState {
         joueur = new Joueur(world);
         levelManager = new LevelManager("levels/level_001.txt");
 
-        char[][] map = levelManager.getLevelInfos();
+        map = levelManager.getLevelInfos();
         mapSize = levelManager.getTailleLevel();
-        BodyDef bodyDef = new BodyDef();
-        for (int x = 0; x < mapSize[0]; x++) {
-            for (int y = 0; y < mapSize[1]; y++) {
-                bodyDef.position.set(x, y);
-                bodyDef.type = BodyDef.BodyType.StaticBody;
-                Body body = world.createBody(bodyDef);
-                switch (map[y][x]) {
-                    case 'A':
-                    case 'B':
-                    case 'C':
-                    case 'D':
-                    case 'E':
-                    case 'F':
-                    case 'G':
-                    case 'H':
-                    case 'I':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureBrique());
-                        break;
-                    case 'J':
-                        body.createFixture(FabriqueObjetPhysique.createFixturePlatGauche());
-                        break;
-                    case 'K':
-                        body.createFixture(FabriqueObjetPhysique.createFixturePlatCentre());
-                        break;
-                    case 'L':
-                        body.createFixture(FabriqueObjetPhysique.createFixturePlatDroite());
-                        break;
-                    case 'P':
-                        joueur.transport(x, y);
-                        break;
-                    case 'W':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureWater()).setUserData("water");
-                        break;
-                    case '1':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau1");
-                        break;
-                    case '2':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau2");
-                        break;
-                    case 'Z':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureSortie()).setUserData("sortie");
-                        break;
-                }
-            }
-        }
+
+        createBodies();
     }
 
     @Override
@@ -158,14 +116,123 @@ public class Play extends GameState {
 
         box2DDebugRenderer.render(world, camera.combined);
 
-        sb.setProjectionMatrix(camera.combined);
+        sb.setProjectionMatrix(hudCam.combined);
         sb.begin();
-
+        //sb.draw(res.getTexture("back"), PPM, PPM);
+        drawMap();
+        sb.draw(joueur.getTexture(), joueur.getPosition().x, mapSize[1] -1- joueur.getPosition().y, 0.5f,0.86f);
         sb.end();
     }
 
     @Override
     public void dispose() {
 
+    }
+
+    public void createBodies() {
+        BodyDef bodyDef = new BodyDef();
+        for (int x = 0; x < mapSize[0]; x++) {
+            for (int y = 0; y < mapSize[1]; y++) {
+                bodyDef.position.set(x, y);
+                bodyDef.type = BodyDef.BodyType.StaticBody;
+                Body body = world.createBody(bodyDef);
+                switch (map[y][x]) {
+                    case 'A':
+                    case 'B':
+                    case 'C':
+                    case 'D':
+                    case 'E':
+                    case 'F':
+                    case 'G':
+                    case 'H':
+                    case 'I':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureBrique());
+                        break;
+                    case 'J':
+                        body.createFixture(FabriqueObjetPhysique.createFixturePlatGauche());
+                        break;
+                    case 'K':
+                        body.createFixture(FabriqueObjetPhysique.createFixturePlatCentre());
+                        break;
+                    case 'L':
+                        body.createFixture(FabriqueObjetPhysique.createFixturePlatDroite());
+                        break;
+                    case 'P':
+                        joueur.transport(x, y);
+                        break;
+                    case 'W':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureWater()).setUserData("water");
+                        break;
+                    case '1':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau1");
+                        break;
+                    case '2':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau2");
+                        break;
+                    case 'Z':
+                        body.createFixture(FabriqueObjetPhysique.createFixtureSortie()).setUserData("sortie");
+                        break;
+                }
+            }
+        }
+    }
+
+    public void drawMap() {
+        int yForCam;
+        for (int x = 0; x < mapSize[0]; x++) {
+            for (int y = 0; y < mapSize[1]; y++) {
+                yForCam = mapSize[1]-1-y;
+                switch (map[y][x]) {
+                    case 'A':
+                        sb.draw(res.getTexture("brickA"), x, yForCam, 1, 1);
+                        break;
+                    case 'B':
+                        sb.draw(res.getTexture("brickB"), x, yForCam, 1, 1);
+                        break;
+                    case 'C':
+                        sb.draw(res.getTexture("brickC"), x, yForCam, 1, 1);
+                        break;
+                    case 'D':
+                        sb.draw(res.getTexture("brickD"), x, yForCam, 1, 1);
+                        break;
+                    case 'E':
+                        sb.draw(res.getTexture("brickE"), x, yForCam, 1, 1);
+                        break;
+                    case 'F':
+                        sb.draw(res.getTexture("brickF"), x, yForCam, 1, 1);
+                        break;
+                    case 'G':
+                        sb.draw(res.getTexture("brickG"), x, yForCam, 1, 1);
+                        break;
+                    case 'H':
+                        sb.draw(res.getTexture("brickH"), x, yForCam, 1, 1);
+                        break;
+                    case 'I':
+                        sb.draw(res.getTexture("brickI"), x, yForCam, 1, 1);
+                        break;
+                    case 'J':
+                        sb.draw(res.getTexture("platJ"), x, yForCam, 1, 0.75f);
+                        break;
+                    case 'K':
+                        sb.draw(res.getTexture("platK"), x, yForCam, 1, 0.75f);
+                        break;
+                    case 'L':
+                        sb.draw(res.getTexture("platL"), x, yForCam, 1, 0.75f);
+                        break;
+                    case 'W':
+                        sb.draw(res.getTexture("water"), x, yForCam, 1, 0.75f);
+                        break;
+                    case '1':
+                        sb.draw(res.getTexture("gem1"), x, yForCam, 1, 1);
+                        break;
+                    case '2':
+                        sb.draw(res.getTexture("gem2"), x, yForCam, 1, 1);
+                        break;
+                    case 'Z':
+                        sb.draw(res.getTexture("sortie"), x, yForCam, 1, 1);
+                        break;
+                }
+            }
+        }
     }
 }

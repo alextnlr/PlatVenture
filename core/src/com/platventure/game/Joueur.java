@@ -2,6 +2,7 @@ package com.platventure.game;
 
 import static com.platventure.game.GlobalVariables.PPM;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,12 +10,14 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.platventure.game.handlers.Content;
 
 public class Joueur {
 
     private Body body;
 
     private int score;
+    private Content res;
 
     public Joueur(World world) {
         BodyDef bodyDef = new BodyDef();
@@ -60,6 +63,9 @@ public class Joueur {
         body.createFixture(fixtureDef).setUserData("foot");
 
         score = 0;
+        res = new Content();
+
+        loadTextures();
     }
 
     public void transport(float x, float y) {
@@ -78,5 +84,17 @@ public class Joueur {
         return score;
     }
 
+    public void render() {
+
+    }
+
     public Vector2 getPosition() { return body.getPosition(); }
+
+    public Texture getTexture() {
+        return res.getTexture("idle0");
+    }
+
+    private void loadTextures() {
+        res.loadTexture("images/Idle__000.png", "idle0");
+    }
 }

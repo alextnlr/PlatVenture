@@ -3,6 +3,7 @@ package com.platventure.game.states;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.platventure.game.PlatVenture;
+import com.platventure.game.handlers.Content;
 import com.platventure.game.handlers.GameStateManager;
 
 public abstract class GameState {
@@ -12,13 +13,15 @@ public abstract class GameState {
     protected SpriteBatch sb;
     protected OrthographicCamera camera;
     protected OrthographicCamera hudCam;
+    protected Content res;
 
     protected GameState(GameStateManager gsm) {
         this.gsm = gsm;
         platVenture = gsm.getPlatVenture();
         sb = platVenture.getBatch();
         camera = platVenture.getCamera();
-        hudCam = platVenture.getHubCam();
+        hudCam = platVenture.getHudCam();
+        res = platVenture.getRes();
     }
 
     public abstract void handleInput();
