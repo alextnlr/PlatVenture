@@ -1,22 +1,13 @@
 package com.platventure.game.states;
 
-import static com.platventure.game.PlatVenture.V_HEIGHT;
-import static com.platventure.game.PlatVenture.V_WIDTH;
-import static com.platventure.game.GlobalVariables.PPM;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.platventure.game.GlobalVariables;
 import com.platventure.game.Joueur;
 import com.platventure.game.fabriques.FabriqueObjetPhysique;
 import com.platventure.game.fabriques.LevelManager;
@@ -33,18 +24,20 @@ public class Play extends GameState {
     private LevelManager levelManager;
 
     private CustomContactListener ccl;
+    private boolean destroyAllBodies;
 
     public Play(GameStateManager gsm) {
         super(gsm);
 
         world = new World(new Vector2(0, 10f), true);
-        ccl = new CustomContactListener();
+        ccl = new CustomContactListener(this);
         world.setContactListener(ccl);
 
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        joueur = new Joueur(world);
+        joueur = new Joueur();
         levelManager = new LevelManager();
+        destroyAllBodies = false;
 
         createBodies();
     }
@@ -70,6 +63,8 @@ public class Play extends GameState {
 
     @Override
     public void update(float dt) {
+        deleteAllBodies();
+
         handleInput();
 
         world.step(dt, 6, 2);
@@ -103,6 +98,19 @@ public class Play extends GameState {
             camera.position.set(camera.position.x,camera.viewportHeight/2f, 0);
         }
         camera.update();
+
+        hudCam.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1)-joueur.getPosition().y, 0);
+        if (hudCam.position.x + hudCam.viewportWidth/2f > (float) levelManager.getCurrentSize(0)) {
+            hudCam.position.set((float) levelManager.getCurrentSize(0)-hudCam.viewportWidth/2f, hudCam.position.y, 0);
+        } else if (hudCam.position.x - hudCam.viewportWidth/2f < 0) {
+            hudCam.position.set(hudCam.viewportWidth/2f, hudCam.position.y, 0);
+        }
+        if (hudCam.position.y + hudCam.viewportHeight/2f > (float) levelManager.getCurrentSize(1)) {
+            hudCam.position.set(hudCam.position.x,(float) levelManager.getCurrentSize(1)-hudCam.viewportHeight/2f, 0);
+        } else if (hudCam.position.y - hudCam.viewportHeight/2f < 0) {
+            hudCam.position.set(hudCam.position.x,hudCam.viewportHeight/2f, 0);
+        }
+        hudCam.update();
     }
 
     @Override
@@ -122,6 +130,26 @@ public class Play extends GameState {
     @Override
     public void dispose() {
 
+    }
+
+    public void changeLevel() {
+        destroyAllBodies = true;
+        levelManager.changeLevel();
+    }
+
+    private void deleteAllBodies() {
+        if(destroyAllBodies) {
+            Array<Body> bodies = new Array<>();
+            world.getBodies(bodies);
+            for (int i = 0; i < bodies.size; i++) {
+                if (!world.isLocked())
+                    world.destroyBody(bodies.get(i));
+            }
+
+            createBodies();
+
+            destroyAllBodies = false;
+        }
     }
 
     public void createBodies() {
@@ -153,6 +181,7 @@ public class Play extends GameState {
                         body.createFixture(FabriqueObjetPhysique.createFixturePlatDroite());
                         break;
                     case 'P':
+                        joueur.createBody(world);
                         joueur.transport(x, y);
                         break;
                     case 'W':

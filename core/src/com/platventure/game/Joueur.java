@@ -19,7 +19,44 @@ public class Joueur {
     private int score;
     private Content res;
 
-    public Joueur(World world) {
+    public Joueur() {
+        score = 0;
+        res = new Content();
+
+        loadTextures();
+    }
+
+    public void transport(float x, float y) {
+        body.setTransform(new Vector2(x+0.25f, y), 0);
+    }
+
+    public void applyForce(float x, float y) {
+        body.applyForceToCenter(x, y, true);
+    }
+
+    public void addScore(int score) { this.score += score; }
+
+    public void resetScore() { this.score = 0; }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void render() {
+
+    }
+
+    public Vector2 getPosition() { return body.getPosition(); }
+
+    public Texture getTexture() {
+        return res.getTexture("idle0");
+    }
+
+    private void loadTextures() {
+        res.loadTexture("images/Idle__000.png", "idle0");
+    }
+
+    public void createBody(World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.fixedRotation = true;
@@ -61,40 +98,5 @@ public class Joueur {
         fixtureDef.isSensor = true;
 
         body.createFixture(fixtureDef).setUserData("foot");
-
-        score = 0;
-        res = new Content();
-
-        loadTextures();
-    }
-
-    public void transport(float x, float y) {
-        body.setTransform(new Vector2(x+0.25f, y), 0);
-    }
-
-    public void applyForce(float x, float y) {
-        body.applyForceToCenter(x, y, true);
-    }
-
-    public void addScore(int score) { this.score += score; }
-
-    public void resetScore() { this.score = 0; }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void render() {
-
-    }
-
-    public Vector2 getPosition() { return body.getPosition(); }
-
-    public Texture getTexture() {
-        return res.getTexture("idle0");
-    }
-
-    private void loadTextures() {
-        res.loadTexture("images/Idle__000.png", "idle0");
     }
 }

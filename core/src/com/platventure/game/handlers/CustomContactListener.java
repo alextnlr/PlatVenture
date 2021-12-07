@@ -8,15 +8,18 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.Array;
+import com.platventure.game.states.Play;
 
 public class CustomContactListener implements ContactListener {
 
     private int playerIsOnGround;
     private Array<Body> joyaux1ToRemove, joyaux2ToRemove;
+    private Play play;
 
-    public CustomContactListener() {
+    public CustomContactListener(Play play) {
         super();
 
+        this.play = play;
         joyaux1ToRemove = new Array<>();
         joyaux2ToRemove = new Array<>();
     }
@@ -71,9 +74,11 @@ public class CustomContactListener implements ContactListener {
 
         if(fa.getUserData() != null && fa.getUserData().equals("sortie")) {
             System.out.println("sortie");
+            play.changeLevel();
         }
         if(fb.getUserData() != null && fb.getUserData().equals("sortie")) {
             System.out.println("sortie");
+            play.changeLevel();
         }
     }
 

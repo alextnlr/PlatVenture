@@ -38,4 +38,11 @@ public class LevelManager {
     public String getCurrentBackground() {
         return levels.get(currentLevel).getBackground();
     }
+
+    public void changeLevel() {
+        currentLevel++;
+        if (currentLevel > 3) {
+            currentLevel = 1;
+        }
+    }
 }
