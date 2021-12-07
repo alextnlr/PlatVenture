@@ -33,8 +33,6 @@ public class Play extends GameState {
     private LevelManager levelManager;
 
     private CustomContactListener ccl;
-    private int[] mapSize;
-    private char[][] map;
 
     public Play(GameStateManager gsm) {
         super(gsm);
@@ -46,10 +44,7 @@ public class Play extends GameState {
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         joueur = new Joueur(world);
-        levelManager = new LevelManager("levels/level_001.txt");
-
-        map = levelManager.getLevelInfos();
-        mapSize = levelManager.getTailleLevel();
+        levelManager = new LevelManager();
 
         createBodies();
     }
@@ -97,13 +92,13 @@ public class Play extends GameState {
 
         //set camera position
         camera.position.set(joueur.getPosition(), 0);
-        if (camera.position.x + camera.viewportWidth/2f > (float) mapSize[0]) {
-            camera.position.set((float) mapSize[0]-camera.viewportWidth/2f, camera.position.y, 0);
+        if (camera.position.x + camera.viewportWidth/2f > (float) levelManager.getCurrentSize(0)) {
+            camera.position.set((float) levelManager.getCurrentSize(0)-camera.viewportWidth/2f, camera.position.y, 0);
         } else if (camera.position.x - camera.viewportWidth/2f < 0) {
             camera.position.set(camera.viewportWidth/2f, camera.position.y, 0);
         }
-        if (camera.position.y + camera.viewportHeight/2f > (float) mapSize[1]) {
-            camera.position.set(camera.position.x,(float) mapSize[1]-camera.viewportHeight/2f, 0);
+        if (camera.position.y + camera.viewportHeight/2f > (float) levelManager.getCurrentSize(1)) {
+            camera.position.set(camera.position.x,(float) levelManager.getCurrentSize(1)-camera.viewportHeight/2f, 0);
         } else if (camera.position.y - camera.viewportHeight/2f < 0) {
             camera.position.set(camera.position.x,camera.viewportHeight/2f, 0);
         }
@@ -114,14 +109,14 @@ public class Play extends GameState {
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        box2DDebugRenderer.render(world, camera.combined);
-
         sb.setProjectionMatrix(hudCam.combined);
         sb.begin();
-        //sb.draw(res.getTexture("back"), PPM, PPM);
+        sb.draw(res.getTexture("back"),0, 0, levelManager.getCurrentSize(0), levelManager.getCurrentSize(1));
         drawMap();
-        sb.draw(joueur.getTexture(), joueur.getPosition().x, mapSize[1] -1- joueur.getPosition().y, 0.5f,0.86f);
+        sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1) -1- joueur.getPosition().y, 0.5f,0.86f);
         sb.end();
+
+        box2DDebugRenderer.render(world, camera.combined);
     }
 
     @Override
@@ -131,12 +126,12 @@ public class Play extends GameState {
 
     public void createBodies() {
         BodyDef bodyDef = new BodyDef();
-        for (int x = 0; x < mapSize[0]; x++) {
-            for (int y = 0; y < mapSize[1]; y++) {
+        for (int x = 0; x < levelManager.getCurrentSize(0); x++) {
+            for (int y = 0; y < levelManager.getCurrentSize(1); y++) {
                 bodyDef.position.set(x, y);
                 bodyDef.type = BodyDef.BodyType.StaticBody;
                 Body body = world.createBody(bodyDef);
-                switch (map[y][x]) {
+                switch (levelManager.getCurrentMap(y, x)) {
                     case 'A':
                     case 'B':
                     case 'C':
@@ -179,10 +174,10 @@ public class Play extends GameState {
 
     public void drawMap() {
         int yForCam;
-        for (int x = 0; x < mapSize[0]; x++) {
-            for (int y = 0; y < mapSize[1]; y++) {
-                yForCam = mapSize[1]-1-y;
-                switch (map[y][x]) {
+        for (int x = 0; x < levelManager.getCurrentSize(0); x++) {
+            for (int y = 0; y < levelManager.getCurrentSize(1); y++) {
+                yForCam = levelManager.getCurrentSize(1)-1-y;
+                switch (levelManager.getCurrentMap(y, x)) {
                     case 'A':
                         sb.draw(res.getTexture("brickA"), x, yForCam, 1, 1);
                         break;

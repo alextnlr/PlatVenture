@@ -4,46 +4,38 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.platventure.game.Level;
 import com.platventure.game.fabriques.FabriqueObjetPhysique;
 
+import java.util.HashMap;
+
 public class LevelManager {
-    private int[] tailleLevel;
-    private int timeLevel;
+    private HashMap<Integer, Level> levels;
+    private int currentLevel;
 
-    private char[][] mapLevel;
-    private String background;
+    public LevelManager() {
+        currentLevel = 1;
 
-    public LevelManager(String level) {
-        if (Gdx.files.internal(level).exists()) {
-            FileHandle file = Gdx.files.internal(level);
-            String fileString = file.readString();
-            String[] fileStringArray = fileString.split("\\r?\\n");
+        levels = new HashMap<>();
 
-            tailleLevel = new int[2];
-            tailleLevel[0] = Integer.parseInt(fileStringArray[0].split(" ")[0]);
-            tailleLevel[1] = Integer.parseInt(fileStringArray[0].split(" ")[1]);
-            timeLevel = Integer.parseInt(fileStringArray[0].split(" ")[2]);
-
-            mapLevel = new char[tailleLevel[1]][tailleLevel[0]];
-            for (int i = 1; i <= tailleLevel[1]; i++) {
-                for (int j = 0; j < tailleLevel[0]; j++) {
-                    mapLevel[i-1][j] = fileStringArray[i].charAt(j);
-                }
-            }
-
-            background = fileStringArray[tailleLevel[1]+1];
-        }
+        levels.put(1, new Level("levels/level_001.txt"));
+        levels.put(2, new Level("levels/level_002.txt"));
+        levels.put(3, new Level("levels/level_003.txt"));
     }
 
-    public char[][] getLevelInfos() {
-        return mapLevel;
+    public char getCurrentMap(int x, int y) {
+        return levels.get(currentLevel).getMap()[x][y];
     }
 
-    public int[] getTailleLevel() {
-        return tailleLevel;
+    public int getCurrentSize(int x) {
+        return levels.get(currentLevel).getSize()[x];
     }
 
-    public int getTimeLevel() {
-        return timeLevel;
+    public int getCurrentTime() {
+        return levels.get(currentLevel).getTime();
+    }
+
+    public String getCurrentBackground() {
+        return levels.get(currentLevel).getBackground();
     }
 }
