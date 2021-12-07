@@ -1,4 +1,4 @@
-package com.platventure.game;
+package com.platventure.game.entities;
 
 import static com.platventure.game.GlobalVariables.PPM;
 
@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.platventure.game.GlobalVariables;
 import com.platventure.game.handlers.Content;
 
 public class Joueur {

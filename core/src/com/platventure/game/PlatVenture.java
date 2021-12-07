@@ -53,7 +53,7 @@ public class PlatVenture extends ApplicationAdapter {
 
 	private GameStateManager gsm;
 
-	private Content res;
+	public static Content res;
 
 	InputListener inputListener;
 

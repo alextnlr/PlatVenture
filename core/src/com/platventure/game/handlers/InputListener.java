@@ -2,8 +2,6 @@ package com.platventure.game.handlers;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.platventure.game.Joueur;
 
 public class InputListener extends InputAdapter {
 

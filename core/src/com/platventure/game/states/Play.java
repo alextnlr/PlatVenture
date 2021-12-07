@@ -8,12 +8,17 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.platventure.game.Joueur;
+import com.platventure.game.entities.Joueur;
+import com.platventure.game.entities.Joyau;
+import com.platventure.game.entities.Joyau1;
+import com.platventure.game.entities.Joyau2;
 import com.platventure.game.fabriques.FabriqueObjetPhysique;
 import com.platventure.game.fabriques.LevelManager;
 import com.platventure.game.handlers.CustomContactListener;
 import com.platventure.game.handlers.GameStateManager;
 import com.platventure.game.handlers.InputManager;
+
+import java.util.ArrayList;
 
 public class Play extends GameState {
 
@@ -21,6 +26,7 @@ public class Play extends GameState {
     private Box2DDebugRenderer box2DDebugRenderer;
 
     private Joueur joueur;
+    private ArrayList<Joyau> joyaux;
     private LevelManager levelManager;
 
     private CustomContactListener ccl;
@@ -36,6 +42,7 @@ public class Play extends GameState {
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         joueur = new Joueur();
+        joyaux = new ArrayList<>();
         levelManager = new LevelManager();
         destroyAllBodies = false;
 
@@ -70,23 +77,21 @@ public class Play extends GameState {
         world.step(dt, 6, 2);
 
         //remove crystals
-        Array<Body> joyaux1 = ccl.getJoyaux1ToRemove();
+        Array<Body> joyaux1 = ccl.getJoyauxToRemove();
         for (Body joyau : joyaux1) {
+            joueur.addScore(((Joyau) joyau.getUserData()).getScore());
+            joyaux.remove((Joyau) joyau.getUserData());
             world.destroyBody(joyau);
-            joueur.addScore(1);
             System.out.println(joueur.getScore());
         }
         joyaux1.clear();
-        Array<Body> joyaux2 = ccl.getJoyaux2ToRemove();
-        for (Body joyau : joyaux2) {
-            world.destroyBody(joyau);
-            joueur.addScore(2);
-            System.out.println(joueur.getScore());
+
+        for (Joyau joyau : joyaux) {
+            joyau.update(dt);
         }
-        joyaux2.clear();
 
         //set camera position
-        camera.position.set(joueur.getPosition(), 0);
+        /*camera.position.set(joueur.getPosition(), 0);
         if (camera.position.x + camera.viewportWidth/2f > (float) levelManager.getCurrentSize(0)) {
             camera.position.set((float) levelManager.getCurrentSize(0)-camera.viewportWidth/2f, camera.position.y, 0);
         } else if (camera.position.x - camera.viewportWidth/2f < 0) {
@@ -97,7 +102,7 @@ public class Play extends GameState {
         } else if (camera.position.y - camera.viewportHeight/2f < 0) {
             camera.position.set(camera.position.x,camera.viewportHeight/2f, 0);
         }
-        camera.update();
+        camera.update();*/
 
         hudCam.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1)-joueur.getPosition().y, 0);
         if (hudCam.position.x + hudCam.viewportWidth/2f > (float) levelManager.getCurrentSize(0)) {
@@ -119,12 +124,26 @@ public class Play extends GameState {
 
         sb.setProjectionMatrix(hudCam.combined);
         sb.begin();
+
+        //Draw background
         sb.draw(res.getTexture("back"),0, 0, levelManager.getCurrentSize(0), levelManager.getCurrentSize(1));
+
+        //Draw tiles
         drawMap();
-        sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1) -1- joueur.getPosition().y, 0.5f,0.86f);
+
+        //Draw joyaux
+        for (Joyau joyau : joyaux) {
+            sb.draw(joyau.getFrame(),
+                    joyau.getBody().getPosition().x+0.3f,
+                    levelManager.getCurrentSize(1)-0.7f-joyau.getBody().getPosition().y,
+                    0.4f, 0.4f);
+        }
+
+        //Draw joyaux
+        sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1)-0.86f-joueur.getPosition().y, 0.5f,0.86f);
         sb.end();
 
-        box2DDebugRenderer.render(world, camera.combined);
+        //box2DDebugRenderer.render(world, camera.combined);
     }
 
     @Override
@@ -134,6 +153,7 @@ public class Play extends GameState {
 
     public void changeLevel() {
         destroyAllBodies = true;
+        joyaux.clear();
         levelManager.changeLevel();
     }
 
@@ -188,10 +208,10 @@ public class Play extends GameState {
                         body.createFixture(FabriqueObjetPhysique.createFixtureWater()).setUserData("water");
                         break;
                     case '1':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau1");
+                        joyaux.add(new Joyau1(world, x, y));
                         break;
                     case '2':
-                        body.createFixture(FabriqueObjetPhysique.createFixtureJoyaux()).setUserData("joyau2");
+                        joyaux.add(new Joyau2(world, x, y));
                         break;
                     case 'Z':
                         body.createFixture(FabriqueObjetPhysique.createFixtureSortie()).setUserData("sortie");
@@ -245,12 +265,6 @@ public class Play extends GameState {
                         break;
                     case 'W':
                         sb.draw(res.getTexture("water"), x, yForCam, 1, 0.75f);
-                        break;
-                    case '1':
-                        sb.draw(res.getTexture("gem1"), x, yForCam, 1, 1);
-                        break;
-                    case '2':
-                        sb.draw(res.getTexture("gem2"), x, yForCam, 1, 1);
                         break;
                     case 'Z':
                         sb.draw(res.getTexture("sortie"), x, yForCam, 1, 1);

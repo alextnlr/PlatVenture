@@ -13,15 +13,14 @@ import com.platventure.game.states.Play;
 public class CustomContactListener implements ContactListener {
 
     private int playerIsOnGround;
-    private Array<Body> joyaux1ToRemove, joyaux2ToRemove;
+    private Array<Body> joyauxToRemove;
     private Play play;
 
     public CustomContactListener(Play play) {
         super();
 
         this.play = play;
-        joyaux1ToRemove = new Array<>();
-        joyaux2ToRemove = new Array<>();
+        joyauxToRemove = new Array<>();
     }
 
     //Appelé lorsque 2 fixtures rentre en contact
@@ -44,18 +43,13 @@ public class CustomContactListener implements ContactListener {
             System.out.println("water");
         }
 
-        if(fa.getUserData() != null && fa.getUserData().equals("joyau1")) {
-            joyaux1ToRemove.add(fa.getBody());
+        if(fa.getUserData() != null && fa.getUserData().equals("joyau")) {
+            System.out.println("gem");
+            joyauxToRemove.add(fa.getBody());
         }
-        if(fb.getUserData() != null && fb.getUserData().equals("joyau1")) {
-            joyaux1ToRemove.add(fb.getBody());
-        }
-
-        if(fa.getUserData() != null && fa.getUserData().equals("joyau2")) {
-            joyaux2ToRemove.add(fa.getBody());
-        }
-        if(fb.getUserData() != null && fb.getUserData().equals("joyau2")) {
-            joyaux2ToRemove.add(fb.getBody());
+        if(fb.getUserData() != null && fb.getUserData().equals("joyau")) {
+            System.out.println("gem");
+            joyauxToRemove.add(fb.getBody());
         }
     }
 
@@ -89,12 +83,8 @@ public class CustomContactListener implements ContactListener {
         return onGround;
     }
 
-    public Array<Body> getJoyaux1ToRemove() {
-        return joyaux1ToRemove;
-    }
-
-    public Array<Body> getJoyaux2ToRemove() {
-        return joyaux2ToRemove;
+    public Array<Body> getJoyauxToRemove() {
+        return joyauxToRemove;
     }
 
     @Override
