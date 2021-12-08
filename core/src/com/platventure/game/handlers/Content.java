@@ -2,6 +2,7 @@ package com.platventure.game.handlers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.HashMap;
 
@@ -21,8 +22,9 @@ public class Content {
         return textures.get(key);
     }
 
-    public void disposeTexture(String key) {
-        Texture texture = textures.get(key);
-        if(texture != null) texture.dispose();
+    public void disposeTexture() {
+        for (Texture textureRegion : textures.values()) {
+            textureRegion.dispose();
+        }
     }
 }

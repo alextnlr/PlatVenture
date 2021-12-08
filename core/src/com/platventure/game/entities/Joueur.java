@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.GlobalVariables;
 import com.platventure.game.handlers.Content;
+import com.platventure.game.handlers.InputManager;
 
 public class Joueur {
 
@@ -19,10 +20,15 @@ public class Joueur {
 
     private int score;
     private Content res;
+    private boolean direction[];
+    private boolean death;
 
     public Joueur() {
         score = 0;
         res = new Content();
+
+        direction = new boolean[3];
+        death = false;
 
         loadTextures();
     }
@@ -35,12 +41,38 @@ public class Joueur {
         body.applyForceToCenter(x, y, true);
     }
 
+
+
     public void addScore(int score) { this.score += score; }
 
     public void resetScore() { this.score = 0; }
 
     public int getScore() {
         return score;
+    }
+
+    public void changeDirection(int dir, boolean active) {
+        direction[dir] = active;
+    }
+
+    public void update(float dt) {
+        if (direction[0]) {
+            applyForce(0, -50f);
+        }
+        if (direction[1]) {
+            applyForce(1f, 0);
+        }
+        if (direction[2]) {
+            applyForce(-1f, 0);
+        }
+    }
+
+    public Body getBody() { return body; }
+
+    public void setDeath(boolean death) { this.death = death; }
+
+    public boolean isDeath() {
+        return death;
     }
 
     public void render() {
@@ -62,6 +94,7 @@ public class Joueur {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.fixedRotation = true;
         body = world.createBody(bodyDef);
+        body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
 
@@ -77,6 +110,8 @@ public class Joueur {
         fixtureDef.filter.maskBits = GlobalVariables.BIT_GROUND;
 
         body.createFixture(fixtureDef).setUserData("player");
+
+        shapeDiamond.dispose();
 
         fixtureDef.density = 0.5f;
         fixtureDef.restitution = 0.1f;
@@ -99,5 +134,7 @@ public class Joueur {
         fixtureDef.isSensor = true;
 
         body.createFixture(fixtureDef).setUserData("foot");
+
+        circleShape.dispose();
     }
 }

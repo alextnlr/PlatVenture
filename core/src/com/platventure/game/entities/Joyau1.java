@@ -15,7 +15,7 @@ public class Joyau1 extends Joyau {
         for (int i = 0; i < 6; i++) {
             sprites[i] = TextureRegion.split(tex, 56, 56)[i][0];
         }
-        animation = new Animation(sprites);
+        animation = new Animation(sprites, 1/6f);
     }
 
     @Override

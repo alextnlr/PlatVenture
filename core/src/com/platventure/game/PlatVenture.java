@@ -40,8 +40,8 @@ import com.platventure.game.handlers.InputManager;
 public class PlatVenture extends ApplicationAdapter {
 
 	public static final String TITLE = "PlatVenture";
-	public static final int V_WIDTH = 1024;
-	public static final int V_HEIGHT = 768;
+	//public static final int V_WIDTH = Gdx.graphics.getWidth();
+	//public static final int V_HEIGHT = Gdx.graphics.getHeight();
 	public static final int SCALE = 1;
 
 	public static final float STEP = 1/60.f;
@@ -84,9 +84,9 @@ public class PlatVenture extends ApplicationAdapter {
 
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
-		camera.setToOrtho(true, V_WIDTH/PPM, V_HEIGHT/PPM);
+		camera.setToOrtho(true, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
 		hudCam = new OrthographicCamera();
-		hudCam.setToOrtho(false, V_WIDTH/PPM, V_HEIGHT/PPM);
+		hudCam.setToOrtho(false, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
 
 		gsm = new GameStateManager(this);
 	}
@@ -107,6 +107,7 @@ public class PlatVenture extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		res.disposeTexture();
 	}
 
 	public SpriteBatch getBatch() { return batch; }

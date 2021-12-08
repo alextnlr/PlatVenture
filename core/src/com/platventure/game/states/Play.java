@@ -29,6 +29,9 @@ public class Play extends GameState {
     private ArrayList<Joyau> joyaux;
     private LevelManager levelManager;
 
+    private float[] positionJoueur;
+    private float deathTime;
+
     private CustomContactListener ccl;
     private boolean destroyAllBodies;
 
@@ -36,7 +39,7 @@ public class Play extends GameState {
         super(gsm);
 
         world = new World(new Vector2(0, 10f), true);
-        ccl = new CustomContactListener(this);
+        ccl = new CustomContactListener();
         world.setContactListener(ccl);
 
         box2DDebugRenderer = new Box2DDebugRenderer();
@@ -46,76 +49,105 @@ public class Play extends GameState {
         levelManager = new LevelManager();
         destroyAllBodies = false;
 
+        deathTime = 0;
+        positionJoueur = new float[2];
+        positionJoueur[0] = 0;
+        positionJoueur[1] = 0;
+
         createBodies();
     }
 
     @Override
     public void handleInput() {
-        if (InputManager.isPressed(InputManager.BUTTON_UP)) {
-            if (ccl.isPlayerOnGround()) {
-                joueur.applyForce(0f, -45f);
-            }
+        if (ccl.isPlayerOnGround()) {
+            joueur.changeDirection(0, InputManager.isPressed(InputManager.BUTTON_UP));
+            joueur.changeDirection(1, InputManager.isDown(InputManager.BUTTON_RIGHT));
+            joueur.changeDirection(2, InputManager.isDown(InputManager.BUTTON_LEFT));
+        } else {
+            joueur.changeDirection(0, false);
+            joueur.changeDirection(1, false);
+            joueur.changeDirection(2, false);
         }
-        if (InputManager.isDown(InputManager.BUTTON_RIGHT)) {
-            if (ccl.isPlayerOnGround()) {
-                joueur.applyForce(1.f, 0);
-            }
-        }
-        if (InputManager.isDown(InputManager.BUTTON_LEFT)) {
-            if (ccl.isPlayerOnGround()) {
-                joueur.applyForce(-1.f, 0);
-            }
-        }
+
+
     }
 
     @Override
     public void update(float dt) {
-        deleteAllBodies();
-
-        handleInput();
 
         world.step(dt, 6, 2);
 
-        //remove crystals
-        Array<Body> joyaux1 = ccl.getJoyauxToRemove();
-        for (Body joyau : joyaux1) {
-            joueur.addScore(((Joyau) joyau.getUserData()).getScore());
-            joyaux.remove((Joyau) joyau.getUserData());
-            world.destroyBody(joyau);
-            System.out.println(joueur.getScore());
-        }
-        joyaux1.clear();
-
-        for (Joyau joyau : joyaux) {
-            joyau.update(dt);
+        if (ccl.changeLevel()) {
+            changeLevel();
+            deleteAllBodies();
+            ccl.finishChangeLevel();
         }
 
-        //set camera position
-        /*camera.position.set(joueur.getPosition(), 0);
-        if (camera.position.x + camera.viewportWidth/2f > (float) levelManager.getCurrentSize(0)) {
-            camera.position.set((float) levelManager.getCurrentSize(0)-camera.viewportWidth/2f, camera.position.y, 0);
-        } else if (camera.position.x - camera.viewportWidth/2f < 0) {
-            camera.position.set(camera.viewportWidth/2f, camera.position.y, 0);
+        if(!ccl.isTouchExit()) {
+            if (joueur.getPosition().x < -0.5 || joueur.getPosition().x > levelManager.getCurrentSize(0)) {
+                joueur.setDeath(true);
+            }
         }
-        if (camera.position.y + camera.viewportHeight/2f > (float) levelManager.getCurrentSize(1)) {
-            camera.position.set(camera.position.x,(float) levelManager.getCurrentSize(1)-camera.viewportHeight/2f, 0);
-        } else if (camera.position.y - camera.viewportHeight/2f < 0) {
-            camera.position.set(camera.position.x,camera.viewportHeight/2f, 0);
-        }
-        camera.update();*/
 
-        hudCam.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1)-joueur.getPosition().y, 0);
-        if (hudCam.position.x + hudCam.viewportWidth/2f > (float) levelManager.getCurrentSize(0)) {
-            hudCam.position.set((float) levelManager.getCurrentSize(0)-hudCam.viewportWidth/2f, hudCam.position.y, 0);
-        } else if (hudCam.position.x - hudCam.viewportWidth/2f < 0) {
-            hudCam.position.set(hudCam.viewportWidth/2f, hudCam.position.y, 0);
+        if (joueur.isDeath()) {
+            if (deathTime == 0) {
+                world.destroyBody(joueur.getBody());
+            }
+            if (deathTime >= 2f) {
+                deathTime = 0;
+                joueur.setDeath(false);
+                joueur.createBody(world);
+                joueur.transport(positionJoueur[0], positionJoueur[1]);
+            } else {
+                deathTime += dt;
+            }
+        } else {
+
+            handleInput();
+
+            joueur.update(dt);
+
+            //remove crystals
+            Array<Body> joyaux1 = ccl.getJoyauxToRemove();
+            for (Body joyau : joyaux1) {
+                joueur.addScore(((Joyau) joyau.getUserData()).getScore());
+                joyaux.remove((Joyau) joyau.getUserData());
+                world.destroyBody(joyau);
+                System.out.println(joueur.getScore());
+            }
+            joyaux1.clear();
+
+            for (Joyau joyau : joyaux) {
+                joyau.update(dt);
+            }
+
+            //set camera position
+            camera.position.set(joueur.getPosition(), 0);
+            if (camera.position.x + camera.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
+                camera.position.set((float) levelManager.getCurrentSize(0) - camera.viewportWidth / 2f, camera.position.y, 0);
+            } else if (camera.position.x - camera.viewportWidth / 2f < 0) {
+                camera.position.set(camera.viewportWidth / 2f, camera.position.y, 0);
+            }
+            if (camera.position.y + camera.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
+                camera.position.set(camera.position.x, (float) levelManager.getCurrentSize(1) - camera.viewportHeight / 2f, 0);
+            } else if (camera.position.y - camera.viewportHeight / 2f < 0) {
+                camera.position.set(camera.position.x, camera.viewportHeight / 2f, 0);
+            }
+            camera.update();
+
+            hudCam.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1) - joueur.getPosition().y, 0);
+            if (hudCam.position.x + hudCam.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
+                hudCam.position.set((float) levelManager.getCurrentSize(0) - hudCam.viewportWidth / 2f, hudCam.position.y, 0);
+            } else if (hudCam.position.x - hudCam.viewportWidth / 2f < 0) {
+                hudCam.position.set(hudCam.viewportWidth / 2f, hudCam.position.y, 0);
+            }
+            if (hudCam.position.y + hudCam.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
+                hudCam.position.set(hudCam.position.x, (float) levelManager.getCurrentSize(1) - hudCam.viewportHeight / 2f, 0);
+            } else if (hudCam.position.y - hudCam.viewportHeight / 2f < 0) {
+                hudCam.position.set(hudCam.position.x, hudCam.viewportHeight / 2f, 0);
+            }
+            hudCam.update();
         }
-        if (hudCam.position.y + hudCam.viewportHeight/2f > (float) levelManager.getCurrentSize(1)) {
-            hudCam.position.set(hudCam.position.x,(float) levelManager.getCurrentSize(1)-hudCam.viewportHeight/2f, 0);
-        } else if (hudCam.position.y - hudCam.viewportHeight/2f < 0) {
-            hudCam.position.set(hudCam.position.x,hudCam.viewportHeight/2f, 0);
-        }
-        hudCam.update();
     }
 
     @Override
@@ -139,11 +171,13 @@ public class Play extends GameState {
                     0.4f, 0.4f);
         }
 
-        //Draw joyaux
-        sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1)-0.86f-joueur.getPosition().y, 0.5f,0.86f);
+        //Draw joueur
+        if (!joueur.isDeath()) {
+            sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1) - 0.86f - joueur.getPosition().y, 0.5f, 0.86f);
+        }
         sb.end();
 
-        //box2DDebugRenderer.render(world, camera.combined);
+        box2DDebugRenderer.render(world, camera.combined);
     }
 
     @Override
@@ -201,6 +235,8 @@ public class Play extends GameState {
                         body.createFixture(FabriqueObjetPhysique.createFixturePlatDroite());
                         break;
                     case 'P':
+                        positionJoueur[0] = x;
+                        positionJoueur[1] = y;
                         joueur.createBody(world);
                         joueur.transport(x, y);
                         break;

@@ -8,18 +8,21 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.Array;
+import com.platventure.game.entities.Joueur;
 import com.platventure.game.states.Play;
 
 public class CustomContactListener implements ContactListener {
 
     private int playerIsOnGround;
     private Array<Body> joyauxToRemove;
-    private Play play;
+    private boolean changeLevel;
+    private boolean touchExit;
 
-    public CustomContactListener(Play play) {
+    public CustomContactListener() {
         super();
 
-        this.play = play;
+        changeLevel = false;
+        touchExit = false;
         joyauxToRemove = new Array<>();
     }
 
@@ -37,19 +40,26 @@ public class CustomContactListener implements ContactListener {
         }
 
         if(fa.getUserData() != null && fa.getUserData().equals("water")) {
-            System.out.println("water");
+            ((Joueur) fb.getBody().getUserData()).setDeath(true);
         }
         if(fb.getUserData() != null && fb.getUserData().equals("water")) {
-            System.out.println("water");
+            ((Joueur) fa.getBody().getUserData()).setDeath(true);
         }
 
         if(fa.getUserData() != null && fa.getUserData().equals("joyau")) {
-            System.out.println("gem");
-            joyauxToRemove.add(fa.getBody());
+            if(!joyauxToRemove.contains(fa.getBody(), true))
+                joyauxToRemove.add(fa.getBody());
         }
         if(fb.getUserData() != null && fb.getUserData().equals("joyau")) {
-            System.out.println("gem");
-            joyauxToRemove.add(fb.getBody());
+            if(!joyauxToRemove.contains(fb.getBody(), true))
+                joyauxToRemove.add(fb.getBody());
+        }
+
+        if(fa.getUserData() != null && fa.getUserData().equals("sortie")) {
+            touchExit = true;
+        }
+        if(fb.getUserData() != null && fb.getUserData().equals("sortie")) {
+            touchExit = true;
         }
     }
 
@@ -67,12 +77,12 @@ public class CustomContactListener implements ContactListener {
         }
 
         if(fa.getUserData() != null && fa.getUserData().equals("sortie")) {
-            System.out.println("sortie");
-            play.changeLevel();
+            changeLevel = true;
+            touchExit = false;
         }
         if(fb.getUserData() != null && fb.getUserData().equals("sortie")) {
-            System.out.println("sortie");
-            play.changeLevel();
+            changeLevel = true;
+            touchExit = false;
         }
     }
 
@@ -86,6 +96,14 @@ public class CustomContactListener implements ContactListener {
     public Array<Body> getJoyauxToRemove() {
         return joyauxToRemove;
     }
+
+    public boolean changeLevel() { return changeLevel; }
+
+    public boolean isTouchExit() {
+        return touchExit;
+    }
+
+    public void finishChangeLevel() { changeLevel=false; }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
