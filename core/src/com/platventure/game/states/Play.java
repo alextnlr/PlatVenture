@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.platventure.game.Hud;
 import com.platventure.game.entities.Joueur;
 import com.platventure.game.entities.Joyau;
 import com.platventure.game.entities.Joyau1;
@@ -29,14 +30,22 @@ public class Play extends GameState {
     private ArrayList<Joyau> joyaux;
     private LevelManager levelManager;
 
+    private Hud hud;
+
+    private float time;
+
     private float[] positionJoueur;
     private float deathTime;
+    private float winTime;
+    private boolean win;
 
     private CustomContactListener ccl;
     private boolean destroyAllBodies;
 
     public Play(GameStateManager gsm) {
         super(gsm);
+
+        hud = new Hud();
 
         world = new World(new Vector2(0, 10f), true);
         ccl = new CustomContactListener();
@@ -50,9 +59,12 @@ public class Play extends GameState {
         destroyAllBodies = false;
 
         deathTime = 0;
+        win = false;
+        winTime = 0;
         positionJoueur = new float[2];
         positionJoueur[0] = 0;
         positionJoueur[1] = 0;
+        time = (float) levelManager.getCurrentTime();
 
         createBodies();
     }
@@ -77,19 +89,14 @@ public class Play extends GameState {
 
         world.step(dt, 6, 2);
 
-        if (ccl.changeLevel()) {
-            changeLevel();
-            deleteAllBodies();
-            ccl.finishChangeLevel();
-        }
+        time -= dt;
 
-        if(!ccl.isTouchExit()) {
-            if (joueur.getPosition().x < -0.5 || joueur.getPosition().x > levelManager.getCurrentSize(0)) {
-                joueur.setDeath(true);
-            }
+        if (time <= 0) {
+            joueur.setDeath(true);
         }
 
         if (joueur.isDeath()) {
+            hud.update((int) time, joueur.getScore(), 1);
             if (deathTime == 0) {
                 world.destroyBody(joueur.getBody());
             }
@@ -98,10 +105,38 @@ public class Play extends GameState {
                 joueur.setDeath(false);
                 joueur.createBody(world);
                 joueur.transport(positionJoueur[0], positionJoueur[1]);
+                joueur.resetScore();
+                time = levelManager.getCurrentTime();
             } else {
                 deathTime += dt;
             }
+        } else if(win) {
+            hud.update((int) time, joueur.getScore(), 2);
+            if (winTime >= 2f) {
+                changeLevel();
+                deleteAllBodies();
+                time = levelManager.getCurrentTime();
+                winTime = 0;
+                win = false;
+            } else {
+                winTime += dt;
+            }
         } else {
+
+            if (ccl.changeLevel()) {
+                if (joueur.getPosition().x < 0 || joueur.getPosition().x > levelManager.getCurrentSize(0)-1) {
+                    if (winTime == 0) {
+                        win = true;
+                    }
+                }
+                ccl.finishChangeLevel();
+            } else if (!ccl.isTouchExit()) {
+                if (joueur.getPosition().x < -0.5 || joueur.getPosition().x > levelManager.getCurrentSize(0)) {
+                    joueur.setDeath(true);
+                }
+            }
+
+            hud.update((int) time, joueur.getScore(), 0);
 
             handleInput();
 
@@ -113,7 +148,6 @@ public class Play extends GameState {
                 joueur.addScore(((Joyau) joyau.getUserData()).getScore());
                 joyaux.remove((Joyau) joyau.getUserData());
                 world.destroyBody(joyau);
-                System.out.println(joueur.getScore());
             }
             joyaux1.clear();
 
@@ -122,31 +156,31 @@ public class Play extends GameState {
             }
 
             //set camera position
-            camera.position.set(joueur.getPosition(), 0);
-            if (camera.position.x + camera.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
-                camera.position.set((float) levelManager.getCurrentSize(0) - camera.viewportWidth / 2f, camera.position.y, 0);
-            } else if (camera.position.x - camera.viewportWidth / 2f < 0) {
-                camera.position.set(camera.viewportWidth / 2f, camera.position.y, 0);
+            cameraDebug.position.set(joueur.getPosition(), 0);
+            if (cameraDebug.position.x + cameraDebug.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
+                cameraDebug.position.set((float) levelManager.getCurrentSize(0) - cameraDebug.viewportWidth / 2f, cameraDebug.position.y, 0);
+            } else if (cameraDebug.position.x - cameraDebug.viewportWidth / 2f < 0) {
+                cameraDebug.position.set(cameraDebug.viewportWidth / 2f, cameraDebug.position.y, 0);
             }
-            if (camera.position.y + camera.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
-                camera.position.set(camera.position.x, (float) levelManager.getCurrentSize(1) - camera.viewportHeight / 2f, 0);
-            } else if (camera.position.y - camera.viewportHeight / 2f < 0) {
-                camera.position.set(camera.position.x, camera.viewportHeight / 2f, 0);
+            if (cameraDebug.position.y + cameraDebug.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
+                cameraDebug.position.set(cameraDebug.position.x, (float) levelManager.getCurrentSize(1) - cameraDebug.viewportHeight / 2f, 0);
+            } else if (cameraDebug.position.y - cameraDebug.viewportHeight / 2f < 0) {
+                cameraDebug.position.set(cameraDebug.position.x, cameraDebug.viewportHeight / 2f, 0);
             }
-            camera.update();
+            cameraDebug.update();
 
-            hudCam.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1) - joueur.getPosition().y, 0);
-            if (hudCam.position.x + hudCam.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
-                hudCam.position.set((float) levelManager.getCurrentSize(0) - hudCam.viewportWidth / 2f, hudCam.position.y, 0);
-            } else if (hudCam.position.x - hudCam.viewportWidth / 2f < 0) {
-                hudCam.position.set(hudCam.viewportWidth / 2f, hudCam.position.y, 0);
+            cameraTexture.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1) - joueur.getPosition().y, 0);
+            if (cameraTexture.position.x + cameraTexture.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
+                cameraTexture.position.set((float) levelManager.getCurrentSize(0) - cameraTexture.viewportWidth / 2f, cameraTexture.position.y, 0);
+            } else if (cameraTexture.position.x - cameraTexture.viewportWidth / 2f < 0) {
+                cameraTexture.position.set(cameraTexture.viewportWidth / 2f, cameraTexture.position.y, 0);
             }
-            if (hudCam.position.y + hudCam.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
-                hudCam.position.set(hudCam.position.x, (float) levelManager.getCurrentSize(1) - hudCam.viewportHeight / 2f, 0);
-            } else if (hudCam.position.y - hudCam.viewportHeight / 2f < 0) {
-                hudCam.position.set(hudCam.position.x, hudCam.viewportHeight / 2f, 0);
+            if (cameraTexture.position.y + cameraTexture.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
+                cameraTexture.position.set(cameraTexture.position.x, (float) levelManager.getCurrentSize(1) - cameraTexture.viewportHeight / 2f, 0);
+            } else if (cameraTexture.position.y - cameraTexture.viewportHeight / 2f < 0) {
+                cameraTexture.position.set(cameraTexture.position.x, cameraTexture.viewportHeight / 2f, 0);
             }
-            hudCam.update();
+            cameraTexture.update();
         }
     }
 
@@ -154,7 +188,8 @@ public class Play extends GameState {
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        sb.setProjectionMatrix(hudCam.combined);
+        sb.setProjectionMatrix(cameraTexture.combined);
+
         sb.begin();
 
         //Draw background
@@ -175,9 +210,14 @@ public class Play extends GameState {
         if (!joueur.isDeath()) {
             sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1) - 0.86f - joueur.getPosition().y, 0.5f, 0.86f);
         }
+
         sb.end();
 
-        box2DDebugRenderer.render(world, camera.combined);
+        box2DDebugRenderer.render(world, cameraDebug.combined);
+
+        sbHud.setProjectionMatrix(cameraHud.combined);
+
+        hud.render(sbHud);
     }
 
     @Override

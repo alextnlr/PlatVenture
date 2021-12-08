@@ -11,16 +11,23 @@ public abstract class GameState {
     protected PlatVenture platVenture;
 
     protected SpriteBatch sb;
-    protected OrthographicCamera camera;
-    protected OrthographicCamera hudCam;
+    protected SpriteBatch sbHud;
+    protected OrthographicCamera cameraDebug;
+    protected OrthographicCamera cameraTexture;
+    protected OrthographicCamera cameraHud;
     protected Content res;
 
     protected GameState(GameStateManager gsm) {
         this.gsm = gsm;
         platVenture = gsm.getPlatVenture();
+
         sb = platVenture.getBatch();
-        camera = platVenture.getCamera();
-        hudCam = platVenture.getHudCam();
+        sbHud = platVenture.getBatchHud();
+
+        cameraDebug = platVenture.getCamera();
+        cameraTexture = platVenture.getCamTexture();
+        cameraHud = platVenture.getCamHud();
+
         res = platVenture.getRes();
     }
 

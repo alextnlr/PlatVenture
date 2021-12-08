@@ -48,8 +48,10 @@ public class PlatVenture extends ApplicationAdapter {
 	private float accum;
 
 	private SpriteBatch batch;
+	private SpriteBatch batchHud;
 	private OrthographicCamera camera;
-	private OrthographicCamera hudCam;
+	private OrthographicCamera camTexture;
+	private OrthographicCamera camHud;
 
 	private GameStateManager gsm;
 
@@ -83,10 +85,14 @@ public class PlatVenture extends ApplicationAdapter {
 		res.loadTexture("images/Gem_2.png", "gem2");
 
 		batch = new SpriteBatch();
+		batchHud = new SpriteBatch();
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(true, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
-		hudCam = new OrthographicCamera();
-		hudCam.setToOrtho(false, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
+		camTexture = new OrthographicCamera();
+		camTexture.setToOrtho(false, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
+		camHud = new OrthographicCamera();
+		camHud.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		gsm = new GameStateManager(this);
 	}
@@ -112,6 +118,9 @@ public class PlatVenture extends ApplicationAdapter {
 
 	public SpriteBatch getBatch() { return batch; }
 	public OrthographicCamera getCamera() { return camera; }
-	public OrthographicCamera getHudCam() { return hudCam; }
+	public OrthographicCamera getCamTexture() { return camTexture; }
+	public OrthographicCamera getCamHud() { return camHud; }
+	public SpriteBatch getBatchHud() { return batchHud;	}
+
 	public Content getRes() { return res; }
 }
