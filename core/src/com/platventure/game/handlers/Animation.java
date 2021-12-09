@@ -43,6 +43,12 @@ public class Animation {
         }
     }
 
+    public void reset() {
+        time = 0;
+        currentFrame = 0;
+        timesPlayed = 0;
+    }
+
     public TextureRegion getFrame() { return frames[currentFrame]; }
     public int getTimesPlayed() { return timesPlayed; }
 }

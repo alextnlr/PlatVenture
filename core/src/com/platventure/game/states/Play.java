@@ -204,13 +204,10 @@ public class Play extends GameState {
                     levelManager.getCurrentSize(1)-0.7f-joyau.getBody().getPosition().y,
                     0.4f, 0.4f);
         }
-
-        //Draw joueur
-        if (!joueur.isDeath()) {
-            sb.draw(joueur.getTexture(), joueur.getPosition().x, levelManager.getCurrentSize(1) - 0.86f - joueur.getPosition().y, 0.5f, 0.86f);
-        }
-
         sb.end();
+
+        //Draw Joueur
+        joueur.render(sb, levelManager.getCurrentSize(1));
 
         box2DDebugRenderer.render(world, cameraDebug.combined);
 

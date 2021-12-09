@@ -1,6 +1,8 @@
 package com.platventure.game.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,7 +11,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.GlobalVariables;
+import com.platventure.game.handlers.Animation;
 import com.platventure.game.handlers.Content;
+
+import java.util.HashMap;
 
 public class Joueur {
 
@@ -19,6 +24,7 @@ public class Joueur {
     private Content res;
     private boolean direction[];
     private boolean death;
+    private HashMap<String, Animation> animations;
 
     public Joueur() {
         score = 0;
@@ -28,6 +34,12 @@ public class Joueur {
         death = false;
 
         loadTextures();
+        animations = new HashMap<>();
+        animations.put("idle", new Animation(createTextureRegion("idle", false)));
+        animations.put("jumpRight", new Animation(createTextureRegion("jump", false)));
+        animations.put("jumpLeft", new Animation(createTextureRegion("jump", true)));
+        animations.put("runRight", new Animation(createTextureRegion("run", false)));
+        animations.put("runLeft", new Animation(createTextureRegion("run", true)));
     }
 
     public void transport(float x, float y) {
@@ -62,6 +74,34 @@ public class Joueur {
         if (direction[2]) {
             applyForce(-1f, 0);
         }
+
+        if (body.getLinearVelocity().y != 0) {
+            if (body.getLinearVelocity().x >= 0) {
+                if (animations.get("jumpRight").getTimesPlayed() < 1)
+                animations.get("jumpRight").update(dt);
+            } else {
+                if (animations.get("jumpLeft").getTimesPlayed() < 1)
+                animations.get("jumpLeft").update(dt);
+            }
+            animations.get("runRight").reset();
+            animations.get("runLeft").reset();
+        } else if (body.getLinearVelocity().x > 0) {
+            animations.get("runRight").update(dt);
+            animations.get("runLeft").reset();
+            animations.get("jumpRight").reset();
+            animations.get("jumpLeft").reset();
+        } else if (body.getLinearVelocity().x < 0) {
+            animations.get("runLeft").update(dt);
+            animations.get("runRight").reset();
+            animations.get("jumpRight").reset();
+            animations.get("jumpLeft").reset();
+        } else {
+            animations.get("idle").update(dt);
+            animations.get("runLeft").reset();
+            animations.get("runRight").reset();
+            animations.get("jumpRight").reset();
+            animations.get("jumpLeft").reset();
+        }
     }
 
     public Body getBody() { return body; }
@@ -72,18 +112,51 @@ public class Joueur {
         return death;
     }
 
-    public void render() {
+    public void render(SpriteBatch sb, int ySize) {
+        sb.begin();
 
+        sb.draw(getTexture(), getPosition().x, ySize - 0.86f - getPosition().y, 0.5f, 0.86f);
+
+        sb.end();
     }
 
     public Vector2 getPosition() { return body.getPosition(); }
 
-    public Texture getTexture() {
-        return res.getTexture("idle0");
+    public TextureRegion getTexture() {
+        TextureRegion tex;
+        if (body.getLinearVelocity().y != 0) {
+            if (body.getLinearVelocity().x >= 0) {
+                tex = animations.get("jumpRight").getFrame();
+            } else {
+                tex = animations.get("jumpLeft").getFrame();
+            }
+        } else if (body.getLinearVelocity().x > 0) {
+            tex = animations.get("runRight").getFrame();
+        } else if (body.getLinearVelocity().x < 0) {
+            tex = animations.get("runLeft").getFrame();
+        } else {
+            tex = animations.get("idle").getFrame();
+        }
+        return tex;
     }
 
     private void loadTextures() {
-        res.loadTexture("images/Idle__000.png", "idle0");
+        for (int i = 0; i < 10; i++) {
+            res.loadTexture("images/Idle__00"+i+".png", "idle"+i);
+
+            res.loadTexture("images/Jump__00"+i+".png", "jump"+i);
+
+            res.loadTexture("images/Run__00"+i+".png", "run"+i);
+        }
+    }
+
+    private TextureRegion[] createTextureRegion(String key, boolean flip) {
+        TextureRegion[] texReg = new TextureRegion[10];
+        for (int i = 0; i < 10; i++) {
+            texReg[i] = new TextureRegion(res.getTexture(key+i));
+            texReg[i].flip(flip, false);
+        }
+        return texReg;
     }
 
     public void createBody(World world) {
@@ -133,5 +206,9 @@ public class Joueur {
         body.createFixture(fixtureDef).setUserData("foot");
 
         circleShape.dispose();
+    }
+
+    public void dispose() {
+        res.disposeTexture();
     }
 }
