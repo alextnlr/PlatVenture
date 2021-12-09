@@ -10,7 +10,7 @@ public class Joyau1 extends Joyau {
     public Joyau1(World world, int x, int y) {
         super(world, x, y);
 
-        Texture tex = PlatVenture.res.getTexture("gem1");
+        Texture tex = PlatVenture.res.getResource("gem1");
         TextureRegion[] sprites = new TextureRegion[6];
         for (int i = 0; i < 6; i++) {
             sprites[i] = TextureRegion.split(tex, 56, 56)[i][0];

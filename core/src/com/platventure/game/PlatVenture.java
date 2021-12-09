@@ -4,9 +4,13 @@ import static com.platventure.game.GlobalVariables.PPM;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.platventure.game.handlers.Content;
+import com.platventure.game.handlers.ContentSound;
+import com.platventure.game.handlers.ContentTexture;
 import com.platventure.game.handlers.GameStateManager;
 import com.platventure.game.handlers.InputListener;
 import com.platventure.game.handlers.InputManager;
@@ -40,9 +44,12 @@ public class PlatVenture extends ApplicationAdapter {
 
 	private GameStateManager gsm;
 
-	public static Content res;
+	public static ContentTexture res;
+	public static ContentSound resSound;
 
 	InputListener inputListener;
+
+	private AssetManager manager;
 
 	@Override
 	public void create () {
@@ -50,25 +57,8 @@ public class PlatVenture extends ApplicationAdapter {
 		inputListener = new InputListener();
 		Gdx.input.setInputProcessor(inputListener);
 
-		res = new Content();
-		res.loadTexture("images/Back.png", "back");
-		res.loadTexture("images/Brick_A.png", "brickA");
-		res.loadTexture("images/Brick_B.png", "brickB");
-		res.loadTexture("images/Brick_C.png", "brickC");
-		res.loadTexture("images/Brick_D.png", "brickD");
-		res.loadTexture("images/Brick_E.png", "brickE");
-		res.loadTexture("images/Brick_F.png", "brickF");
-		res.loadTexture("images/Brick_G.png", "brickG");
-		res.loadTexture("images/Brick_H.png", "brickH");
-		res.loadTexture("images/Brick_I.png", "brickI");
-		res.loadTexture("images/Platform_J.png", "platJ");
-		res.loadTexture("images/Platform_K.png", "platK");
-		res.loadTexture("images/Platform_L.png", "platL");
-		res.loadTexture("images/Water.png", "water");
-		res.loadTexture("images/Exit_Z.png", "sortie");
-		res.loadTexture("images/Gem_1.png", "gem1");
-		res.loadTexture("images/Gem_2.png", "gem2");
-		res.loadTexture("images/Intro.png", "intro");
+		loadTextures();
+		loadSound();
 
 		batch = new SpriteBatch();
 		batchHud = new SpriteBatch();
@@ -95,11 +85,12 @@ public class PlatVenture extends ApplicationAdapter {
 		}
 
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();
-		res.disposeTexture();
+		res.disposeResources();
+		resSound.disposeResources();
 	}
 
 	public void goToPlay() { gsm.setState(GameStateManager.PLAY); }
@@ -109,5 +100,40 @@ public class PlatVenture extends ApplicationAdapter {
 	public OrthographicCamera getCamHud() { return camHud; }
 	public SpriteBatch getBatchHud() { return batchHud;	}
 
-	public Content getRes() { return res; }
+	public ContentTexture getRes() { return res; }
+	public ContentSound getResSound() { return resSound; }
+
+	private void loadTextures() {
+		res = new ContentTexture();
+
+		res.loadResource("images/Back.png", "back");
+		res.loadResource("images/Brick_A.png", "brickA");
+		res.loadResource("images/Brick_B.png", "brickB");
+		res.loadResource("images/Brick_C.png", "brickC");
+		res.loadResource("images/Brick_D.png", "brickD");
+		res.loadResource("images/Brick_E.png", "brickE");
+		res.loadResource("images/Brick_F.png", "brickF");
+		res.loadResource("images/Brick_G.png", "brickG");
+		res.loadResource("images/Brick_H.png", "brickH");
+		res.loadResource("images/Brick_I.png", "brickI");
+		res.loadResource("images/Platform_J.png", "platJ");
+		res.loadResource("images/Platform_K.png", "platK");
+		res.loadResource("images/Platform_L.png", "platL");
+		res.loadResource("images/Water.png", "water");
+		res.loadResource("images/Exit_Z.png", "sortie");
+		res.loadResource("images/Gem_1.png", "gem1");
+		res.loadResource("images/Gem_2.png", "gem2");
+		res.loadResource("images/Intro.png", "intro");
+	}
+
+	private void loadSound() {
+		resSound = new ContentSound();
+
+		resSound.loadResource("sounds/alert.ogg", "alert");
+		resSound.loadResource("sounds/collision.ogg", "collision");
+		resSound.loadResource("sounds/gem.ogg", "gem");
+		resSound.loadResource("sounds/loose.ogg", "loose");
+		resSound.loadResource("sounds/plouf.ogg", "plouf");
+		resSound.loadResource("sounds/win.ogg", "win");
+	}
 }

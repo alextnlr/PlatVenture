@@ -1,6 +1,5 @@
 package com.platventure.game.entities;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -12,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.platventure.game.GlobalVariables;
 import com.platventure.game.handlers.Animation;
-import com.platventure.game.handlers.Content;
+import com.platventure.game.handlers.ContentTexture;
 
 import java.util.HashMap;
 
@@ -21,14 +20,14 @@ public class Joueur {
     private Body body;
 
     private int score;
-    private Content res;
+    private ContentTexture res;
     private boolean direction[];
     private boolean death;
     private HashMap<String, Animation> animations;
 
     public Joueur() {
         score = 0;
-        res = new Content();
+        res = new ContentTexture();
 
         direction = new boolean[3];
         death = false;
@@ -142,18 +141,18 @@ public class Joueur {
 
     private void loadTextures() {
         for (int i = 0; i < 10; i++) {
-            res.loadTexture("images/Idle__00"+i+".png", "idle"+i);
+            res.loadResource("images/Idle__00"+i+".png", "idle"+i);
 
-            res.loadTexture("images/Jump__00"+i+".png", "jump"+i);
+            res.loadResource("images/Jump__00"+i+".png", "jump"+i);
 
-            res.loadTexture("images/Run__00"+i+".png", "run"+i);
+            res.loadResource("images/Run__00"+i+".png", "run"+i);
         }
     }
 
     private TextureRegion[] createTextureRegion(String key, boolean flip) {
         TextureRegion[] texReg = new TextureRegion[10];
         for (int i = 0; i < 10; i++) {
-            texReg[i] = new TextureRegion(res.getTexture(key+i));
+            texReg[i] = new TextureRegion(res.getResource(key+i));
             texReg[i].flip(flip, false);
         }
         return texReg;
@@ -209,6 +208,6 @@ public class Joueur {
     }
 
     public void dispose() {
-        res.disposeTexture();
+        res.disposeResources();
     }
 }

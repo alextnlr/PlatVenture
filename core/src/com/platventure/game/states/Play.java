@@ -1,6 +1,9 @@
 package com.platventure.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -90,8 +93,6 @@ public class Play extends GameState {
 
         world.step(dt, 6, 2);
 
-        time -= dt;
-
         if (time <= 0) {
             joueur.setDeath(true);
         }
@@ -123,6 +124,7 @@ public class Play extends GameState {
                 winTime += dt;
             }
         } else {
+            time -= dt;
 
             if (ccl.changeLevel()) {
                 if (joueur.getPosition().x < 0 || joueur.getPosition().x > levelManager.getCurrentSize(0)-1) {
@@ -149,6 +151,7 @@ public class Play extends GameState {
                 joueur.addScore(((Joyau) joyau.getUserData()).getScore());
                 joyaux.remove((Joyau) joyau.getUserData());
                 world.destroyBody(joyau);
+                //Gdx.audio.newSound(Gdx.files.internal("sounds/win.ogg")).play(1f);
             }
             joyaux1.clear();
 
@@ -192,7 +195,7 @@ public class Play extends GameState {
         sb.begin();
 
         //Draw background
-        sb.draw(res.getTexture("back"),0, 0, levelManager.getCurrentSize(0), levelManager.getCurrentSize(1));
+        sb.draw(res.getResource("back"),0, 0, levelManager.getCurrentSize(0), levelManager.getCurrentSize(1));
 
         //Draw tiles
         drawMap();
@@ -300,46 +303,46 @@ public class Play extends GameState {
                 yForCam = levelManager.getCurrentSize(1)-1-y;
                 switch (levelManager.getCurrentMap(y, x)) {
                     case 'A':
-                        sb.draw(res.getTexture("brickA"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickA"), x, yForCam, 1, 1);
                         break;
                     case 'B':
-                        sb.draw(res.getTexture("brickB"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickB"), x, yForCam, 1, 1);
                         break;
                     case 'C':
-                        sb.draw(res.getTexture("brickC"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickC"), x, yForCam, 1, 1);
                         break;
                     case 'D':
-                        sb.draw(res.getTexture("brickD"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickD"), x, yForCam, 1, 1);
                         break;
                     case 'E':
-                        sb.draw(res.getTexture("brickE"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickE"), x, yForCam, 1, 1);
                         break;
                     case 'F':
-                        sb.draw(res.getTexture("brickF"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickF"), x, yForCam, 1, 1);
                         break;
                     case 'G':
-                        sb.draw(res.getTexture("brickG"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickG"), x, yForCam, 1, 1);
                         break;
                     case 'H':
-                        sb.draw(res.getTexture("brickH"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickH"), x, yForCam, 1, 1);
                         break;
                     case 'I':
-                        sb.draw(res.getTexture("brickI"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("brickI"), x, yForCam, 1, 1);
                         break;
                     case 'J':
-                        sb.draw(res.getTexture("platJ"), x, yForCam, 1, 0.75f);
+                        sb.draw(res.getResource("platJ"), x, yForCam, 1, 0.75f);
                         break;
                     case 'K':
-                        sb.draw(res.getTexture("platK"), x, yForCam, 1, 0.75f);
+                        sb.draw(res.getResource("platK"), x, yForCam, 1, 0.75f);
                         break;
                     case 'L':
-                        sb.draw(res.getTexture("platL"), x, yForCam, 1, 0.75f);
+                        sb.draw(res.getResource("platL"), x, yForCam, 1, 0.75f);
                         break;
                     case 'W':
-                        sb.draw(res.getTexture("water"), x, yForCam, 1, 0.75f);
+                        sb.draw(res.getResource("water"), x, yForCam, 1, 0.75f);
                         break;
                     case 'Z':
-                        sb.draw(res.getTexture("sortie"), x, yForCam, 1, 1);
+                        sb.draw(res.getResource("sortie"), x, yForCam, 1, 1);
                         break;
                 }
             }
