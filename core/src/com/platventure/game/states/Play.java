@@ -2,6 +2,7 @@ package com.platventure.game.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -156,32 +157,30 @@ public class Play extends GameState {
             }
 
             //set camera position
-            cameraDebug.position.set(joueur.getPosition(), 0);
-            if (cameraDebug.position.x + cameraDebug.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
-                cameraDebug.position.set((float) levelManager.getCurrentSize(0) - cameraDebug.viewportWidth / 2f, cameraDebug.position.y, 0);
-            } else if (cameraDebug.position.x - cameraDebug.viewportWidth / 2f < 0) {
-                cameraDebug.position.set(cameraDebug.viewportWidth / 2f, cameraDebug.position.y, 0);
-            }
-            if (cameraDebug.position.y + cameraDebug.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
-                cameraDebug.position.set(cameraDebug.position.x, (float) levelManager.getCurrentSize(1) - cameraDebug.viewportHeight / 2f, 0);
-            } else if (cameraDebug.position.y - cameraDebug.viewportHeight / 2f < 0) {
-                cameraDebug.position.set(cameraDebug.position.x, cameraDebug.viewportHeight / 2f, 0);
-            }
-            cameraDebug.update();
-
-            cameraTexture.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1) - joueur.getPosition().y, 0);
-            if (cameraTexture.position.x + cameraTexture.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
-                cameraTexture.position.set((float) levelManager.getCurrentSize(0) - cameraTexture.viewportWidth / 2f, cameraTexture.position.y, 0);
-            } else if (cameraTexture.position.x - cameraTexture.viewportWidth / 2f < 0) {
-                cameraTexture.position.set(cameraTexture.viewportWidth / 2f, cameraTexture.position.y, 0);
-            }
-            if (cameraTexture.position.y + cameraTexture.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
-                cameraTexture.position.set(cameraTexture.position.x, (float) levelManager.getCurrentSize(1) - cameraTexture.viewportHeight / 2f, 0);
-            } else if (cameraTexture.position.y - cameraTexture.viewportHeight / 2f < 0) {
-                cameraTexture.position.set(cameraTexture.position.x, cameraTexture.viewportHeight / 2f, 0);
-            }
-            cameraTexture.update();
+            setCamToPlayer(cameraDebug, false);
+            setCamToPlayer(cameraTexture, true);
         }
+    }
+
+    private void setCamToPlayer(OrthographicCamera camera, boolean yDown) {
+        //Set the center of the cam on the player
+        if (yDown) {
+            camera.position.set(joueur.getPosition().x, levelManager.getCurrentSize(1) - joueur.getPosition().y, 0);
+        } else {
+            camera.position.set(joueur.getPosition().x, joueur.getPosition().y, 0);
+        }
+
+        if (camera.position.x + camera.viewportWidth / 2f > (float) levelManager.getCurrentSize(0)) {
+            camera.position.set((float) levelManager.getCurrentSize(0) - camera.viewportWidth / 2f, camera.position.y, 0);
+        } else if (camera.position.x - camera.viewportWidth / 2f < 0) {
+            camera.position.set(camera.viewportWidth / 2f, camera.position.y, 0);
+        }
+        if (camera.position.y + camera.viewportHeight / 2f > (float) levelManager.getCurrentSize(1)) {
+            camera.position.set(camera.position.x, (float) levelManager.getCurrentSize(1) - camera.viewportHeight / 2f, 0);
+        } else if (camera.position.y - camera.viewportHeight / 2f < 0) {
+            camera.position.set(camera.position.x, camera.viewportHeight / 2f, 0);
+        }
+        camera.update();
     }
 
     @Override

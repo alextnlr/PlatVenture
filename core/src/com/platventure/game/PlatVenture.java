@@ -15,25 +15,10 @@ import com.platventure.game.handlers.InputManager;
 //TODO Etape 0 :
 // - Diagramme UML
 
-//TODO Etape 1 : Affichages en mode DebugRenderer v
-// - Definition camera du monde v
-// - Initialisation du moteur physique v
-// - Lecture du fichier de niveau avec constructeur de Body v
-// - Construction du Joueur v
-// - Controles du joueur v
-// - Etat du jeu (score..) v
-// - Detection des contacts v
-
-//TODO Etape 2 : Affichages des infos du jeu et gestion de partie
-// - Definition camera pour les textes
-// - Affichage score et temps
-// - Detection perte et victoire
-// - Relance et chargement de niveau
-
 //TODO Etape 3 : Habillage des objets
-// - Texture des elements non animés
-// - Animation des gems
-// - Imaes spe pour le joueur selon action
+// - Texture des elements non animés v
+// - Animation des gems v
+// - Images spe pour le joueur selon action
 // - Animation complete joueur
 
 
@@ -83,6 +68,7 @@ public class PlatVenture extends ApplicationAdapter {
 		res.loadTexture("images/Exit_Z.png", "sortie");
 		res.loadTexture("images/Gem_1.png", "gem1");
 		res.loadTexture("images/Gem_2.png", "gem2");
+		res.loadTexture("images/Intro.png", "intro");
 
 		batch = new SpriteBatch();
 		batchHud = new SpriteBatch();
@@ -116,6 +102,7 @@ public class PlatVenture extends ApplicationAdapter {
 		res.disposeTexture();
 	}
 
+	public void goToPlay() { gsm.setState(GameStateManager.PLAY); }
 	public SpriteBatch getBatch() { return batch; }
 	public OrthographicCamera getCamera() { return camera; }
 	public OrthographicCamera getCamTexture() { return camTexture; }
