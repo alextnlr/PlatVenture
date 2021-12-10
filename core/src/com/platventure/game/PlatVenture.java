@@ -47,9 +47,7 @@ public class PlatVenture extends ApplicationAdapter {
 	public static ContentTexture res;
 	public static ContentSound resSound;
 
-	InputListener inputListener;
-
-	private AssetManager manager;
+	public static InputListener inputListener;
 
 	@Override
 	public void create () {

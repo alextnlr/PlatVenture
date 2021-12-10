@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.platventure.game.Hud;
+import com.platventure.game.PlatVenture;
 import com.platventure.game.entities.Joueur;
 import com.platventure.game.entities.Joyau;
 import com.platventure.game.entities.Joyau1;
@@ -125,6 +126,8 @@ public class Play extends GameState {
             }
         } else {
             time -= dt;
+
+            PlatVenture.inputListener.update(dt);
 
             if (ccl.changeLevel()) {
                 if (joueur.getPosition().x < 0 || joueur.getPosition().x > levelManager.getCurrentSize(0)-1) {
