@@ -2,6 +2,7 @@ package com.platventure.game.states;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.platventure.game.GlobalVariables;
 import com.platventure.game.PlatVenture;
 import com.platventure.game.handlers.ContentSound;
 import com.platventure.game.handlers.ContentTexture;
@@ -26,7 +27,8 @@ public abstract class GameState {
         sb = platVenture.getBatch();
         sbHud = platVenture.getBatchHud();
 
-        cameraDebug = platVenture.getCamera();
+        if (GlobalVariables.DEBUG)
+            cameraDebug = platVenture.getCamera();
         cameraTexture = platVenture.getCamTexture();
         cameraHud = platVenture.getCamHud();
 

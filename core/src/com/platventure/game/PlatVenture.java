@@ -61,8 +61,11 @@ public class PlatVenture extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		batchHud = new SpriteBatch();
 
-		camera = new OrthographicCamera();
-		camera.setToOrtho(true, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
+		if (GlobalVariables.DEBUG) {
+			camera = new OrthographicCamera();
+			camera.setToOrtho(true, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
+		}
+
 		camTexture = new OrthographicCamera();
 		camTexture.setToOrtho(false, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
 		camHud = new OrthographicCamera();

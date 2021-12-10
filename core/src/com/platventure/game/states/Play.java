@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.platventure.game.GlobalVariables;
 import com.platventure.game.Hud;
 import com.platventure.game.PlatVenture;
 import com.platventure.game.entities.Joueur;
@@ -56,7 +57,8 @@ public class Play extends GameState {
         ccl = new CustomContactListener();
         world.setContactListener(ccl);
 
-        box2DDebugRenderer = new Box2DDebugRenderer();
+        if (GlobalVariables.DEBUG)
+            box2DDebugRenderer = new Box2DDebugRenderer();
 
         joueur = new Joueur();
         joyaux = new ArrayList<>();
@@ -163,7 +165,8 @@ public class Play extends GameState {
             }
 
             //set camera position
-            setCamToPlayer(cameraDebug, false);
+            if (GlobalVariables.DEBUG)
+                setCamToPlayer(cameraDebug, false);
             setCamToPlayer(cameraTexture, true);
         }
     }
@@ -215,7 +218,8 @@ public class Play extends GameState {
         //Draw Joueur
         joueur.render(sb, levelManager.getCurrentSize(1));
 
-        box2DDebugRenderer.render(world, cameraDebug.combined);
+        if (GlobalVariables.DEBUG)
+            box2DDebugRenderer.render(world, cameraDebug.combined);
 
         sbHud.setProjectionMatrix(cameraHud.combined);
 
