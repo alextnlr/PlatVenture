@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Timer;
+import com.platventure.game.PlatVenture;
 import com.platventure.game.handlers.GameStateManager;
 
 public class StartScreen extends GameState{
@@ -40,10 +41,20 @@ public class StartScreen extends GameState{
     @Override
     public void render() {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         sb.setProjectionMatrix(cameraHud.combined);
+
         sb.begin();
         sb.draw(res.getResource("intro"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         sb.end();
+
+
+            if(PlatVenture.manager.isLoaded("sounds/win.ogg")) {
+                Sound sound = PlatVenture.manager.get("sounds/win.ogg", Sound.class);
+                sound.play();
+            } else {
+                System.out.println("pas charge");
+            }
     }
 
     @Override

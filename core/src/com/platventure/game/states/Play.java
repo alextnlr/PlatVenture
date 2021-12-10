@@ -156,7 +156,6 @@ public class Play extends GameState {
                 joueur.addScore(((Joyau) joyau.getUserData()).getScore());
                 joyaux.remove((Joyau) joyau.getUserData());
                 world.destroyBody(joyau);
-                //Gdx.audio.newSound(Gdx.files.internal("sounds/win.ogg")).play(1f);
             }
             joyaux1.clear();
 
@@ -164,10 +163,12 @@ public class Play extends GameState {
                 joyau.update(dt);
             }
 
-            //set camera position
-            if (GlobalVariables.DEBUG)
-                setCamToPlayer(cameraDebug, false);
-            setCamToPlayer(cameraTexture, true);
+            if (levelManager.getCurrentSize(0) > 16) {
+                //set camera position
+                if (GlobalVariables.DEBUG)
+                    setCamToPlayer(cameraDebug, false);
+                setCamToPlayer(cameraTexture, true);
+            }
         }
     }
 
