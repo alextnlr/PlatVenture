@@ -18,11 +18,11 @@ public class Hud {
         etat = 0;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Comic_Sans_MS_Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int) (60*((int) Gdx.graphics.getWidth()/1024f));
+        parameter.size = (int) (60*((int) Gdx.graphics.getWidth()/1024f))-1;
         Color yellow = new Color();
         yellow.set(255, 255, 0, 0.75f);
         parameter.color = yellow;
-        parameter.borderWidth = (int) (3*((int) Gdx.graphics.getWidth()/1024f));
+        parameter.borderWidth = (int) (3*((int) Gdx.graphics.getWidth()/1024f))-1f;
         parameter.borderColor = Color.BLACK;
         font = generator.generateFont(parameter);
         generator.dispose();

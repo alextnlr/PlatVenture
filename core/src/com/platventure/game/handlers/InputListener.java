@@ -29,6 +29,9 @@ public class InputListener extends InputAdapter {
             case Input.Keys.UP:
                 InputManager.setKey(InputManager.BUTTON_UP, true);
                 break;
+            case Input.Keys.ESCAPE:
+                Gdx.app.exit();
+                break;
         }
         return false;
     }

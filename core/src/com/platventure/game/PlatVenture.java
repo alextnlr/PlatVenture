@@ -19,19 +19,10 @@ import com.platventure.game.handlers.InputManager;
 //TODO Etape 0 :
 // - Diagramme UML
 
-//TODO Etape 3 : Habillage des objets
-// - Texture des elements non animés v
-// - Animation des gems v
-// - Images spe pour le joueur selon action
-// - Animation complete joueur
-
 
 public class PlatVenture extends ApplicationAdapter {
 
 	public static final String TITLE = "PlatVenture";
-	//public static final int V_WIDTH = Gdx.graphics.getWidth();
-	//public static final int V_HEIGHT = Gdx.graphics.getHeight();
-	public static final int SCALE = 1;
 
 	public static final float STEP = 1/60.f;
 	private float accum;
@@ -48,9 +39,14 @@ public class PlatVenture extends ApplicationAdapter {
 	public static ContentSound resSound;
 
 	public static InputListener inputListener;
+	public static AssetManager manager;
 
 	@Override
 	public void create () {
+
+		manager = new AssetManager();
+		manager.load("sounds/win.ogg", Sound.class);
+		manager.finishLoading();
 
 		inputListener = new InputListener();
 		Gdx.input.setInputProcessor(inputListener);
