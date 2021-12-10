@@ -15,11 +15,6 @@ import com.platventure.game.handlers.GameStateManager;
 import com.platventure.game.handlers.InputListener;
 import com.platventure.game.handlers.InputManager;
 
-
-//TODO Etape 0 :
-// - Diagramme UML
-
-
 public class PlatVenture extends ApplicationAdapter {
 
 	public static final String TITLE = "PlatVenture";
@@ -39,29 +34,27 @@ public class PlatVenture extends ApplicationAdapter {
 	public static ContentSound resSound;
 
 	public static InputListener inputListener;
-	public static AssetManager manager;
 
 	@Override
 	public void create () {
 
-		manager = new AssetManager();
-		manager.load("sounds/win.ogg", Sound.class);
-		manager.finishLoading();
-
+		//Set up de l'input listener perso
 		inputListener = new InputListener();
 		Gdx.input.setInputProcessor(inputListener);
 
+		//Chargement des ressources
 		loadTextures();
 		loadSound();
 
+		//Creation des batchs
 		batch = new SpriteBatch();
 		batchHud = new SpriteBatch();
 
+		//Chargement des cameras
 		if (GlobalVariables.DEBUG) {
 			camera = new OrthographicCamera();
 			camera.setToOrtho(true, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 		}
-
 		camTexture = new OrthographicCamera();
 		camTexture.setToOrtho(false, Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/PPM);
 		camHud = new OrthographicCamera();

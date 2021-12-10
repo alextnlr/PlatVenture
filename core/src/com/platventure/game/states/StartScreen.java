@@ -47,14 +47,6 @@ public class StartScreen extends GameState{
         sb.begin();
         sb.draw(res.getResource("intro"), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         sb.end();
-
-
-            if(PlatVenture.manager.isLoaded("sounds/win.ogg")) {
-                Sound sound = PlatVenture.manager.get("sounds/win.ogg", Sound.class);
-                sound.play();
-            } else {
-                System.out.println("pas charge");
-            }
     }
 
     @Override

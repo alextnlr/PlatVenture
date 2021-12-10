@@ -1,0 +1,173 @@
+@startuml
+hide empty members
+
+package entities {
+class Joueur {
+Body body
+ContentTexture res
+HashMap<String, Animation> animations
+int score
+boolean direction[]
+boolean death
+void update(float dt)
+void render()
+Vector2 getPosition()
+void createBody()
+}
+abstract Joyau {
+Body body
+Animation animation
+void update(float dt)
+void render(SpriteBatch sb)
+}
+class Joyau1
+class Joyau2
+}
+
+package fabriques {
+class FabriqueObjetPhysique {
+FixtureDef fixtureDef
+FixtureDef getFixture(char t)
+}
+FabriqueObjetPhysique --"1" FabriqueObjetPhysique
+class LevelManager {
+HashMap<Integer, Level> levels
+int currentLevel
+void changeLevel()
+}
+}
+
+package handlers {
+class Animation {
+TextureRegion[] frames
+float time
+float delay
+int currentFrame
+int timesPlayed
+void setFrames(TextureRegion[] frames, float delay)
+void update(float dt)
+void reset()
+}
+interface Content {
+void loadResource(String path, String key)
+void disposeResources()
+}
+class ContentSound {
+HashMap<String, Sound> content
+Sound getResources(String key)
+}
+class ContentTexture {
+HashMap<String, Texture> content
+Texture getResource(String key)
+}
+class CustomContactListener<extends ContactListener> {
+int playerOnGround
+boolean changeLevel
+boolean touchExit
+Array<Body> joyauxToRemove
+void beginContact(Contact contact)
+void endContact(Contact contact)
+}
+class GameStateManager {
+int PLAY
+int START
+void update(float dt)
+void render()
+}
+class InputListener<extends InputAdapter> {
+int doubleTapSide
+float timerDblTap
+boolean keyDown(int keycode)
+boolean keyUp(int keycode)
+boolean touchDown(int screenX, int screenY, int pointer, int button)
+boolean touchUp(int screenX, int screenY, int pointer, int button)
+void update(float dt)
+}
+class InputManager {
+boolean[] keys
+boolean[] pkeys
+int NUM_KEYS
+int BUTTON_RIGHT
+int BUTTON_LEFT
+int BUTTON_UP
+void update()
+}
+}
+
+package states {
+abstract GameState
+class Play {
+World world
+Box2DSebugRenderer b2dr
+float time
+float[] positionJoueur
+float deathTime
+float winTime
+boolean win
+boolean destroyAllBodies
+void handleInput()
+void update(float dt)
+void render()
+}
+class StartScreen {
+float timer
+void update(float dt)
+void render()
+}
+}
+
+class GlobalVariables {
+float PPM
+boolean DEBUG
+short BIT_PLAYER
+short BIT_GROUND
+}
+class Hud {
+BitmapFont font
+int time
+int score
+int etat
+void update(int time, int score, int etat)
+void render(SpriteBatch sb)
+}
+class Level {
+char[][] map
+int[] size
+int time
+String background
+}
+class PlatVenture {
+String TITLE
+float STEP
+float accum
+Camera[] cameras
+SpriteBatch[] sbs
+void create()
+void render()
+void dispose()
+}
+
+Joyau1 --|> Joyau
+Joyau2 --|> Joyau
+
+PlatVenture --|> ApplicationAdapter
+
+Play --|> GameState
+StartScreen --|> GameState
+
+ContentSound ..|> Content
+ContentTexture ..|> Content
+
+PlatVenture "1"--"1" GameStateManager
+PlatVenture --"2" Content
+PlatVenture --"1" InputListener
+PlatVenture "1"-- GameState
+
+Play --"1" Joueur
+Play --"*" Joyau
+Play --"1" LevelManager
+Play --"1" Hud
+Play --"1" CustomContactListener
+
+GameStateManager --"*" GameState
+@enduml
