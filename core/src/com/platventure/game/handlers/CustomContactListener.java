@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.Array;
+import com.platventure.game.PlatVenture;
 import com.platventure.game.entities.Joueur;
 import com.platventure.game.states.Play;
 
@@ -41,9 +42,11 @@ public class CustomContactListener implements ContactListener {
 
         if(fa.getUserData() != null && fa.getUserData().equals("water")) {
             ((Joueur) fb.getBody().getUserData()).setDeath(true);
+            PlatVenture.resSound.getResource("plouf").play();
         }
         if(fb.getUserData() != null && fb.getUserData().equals("water")) {
             ((Joueur) fa.getBody().getUserData()).setDeath(true);
+            PlatVenture.resSound.getResource("plouf").play();
         }
 
         if(fa.getUserData() != null && fa.getUserData().equals("joyau")) {

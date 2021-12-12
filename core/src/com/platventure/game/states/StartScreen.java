@@ -30,9 +30,7 @@ public class StartScreen extends GameState{
             platVenture.goToPlay();
         } else {
             if(timer==0) {
-                long id = resSound.getResource("win").play();
-                System.out.println(id);
-                resSound.getResource("win").setVolume(id, 1f);
+                resSound.getResource("win").play();
             }
             timer += dt;
         }

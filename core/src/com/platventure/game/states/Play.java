@@ -191,6 +191,8 @@ public class Play extends GameState {
                 setCamToPlayer(cameraDebug, false);
             setCamToPlayer(cameraTexture, true);
         } else {
+            if (winTime == 0)
+                resSound.getResource("win").play();
             winTime += dt;
         }
     }
@@ -199,6 +201,7 @@ public class Play extends GameState {
         hud.update((int) time, joueur.getScore(), 1);
         if (deathTime == 0) {
             world.destroyBody(joueur.getBody());
+            resSound.getResource("loose").play();
         }
         if (deathTime >= 2f) {
             deathTime = 0;
@@ -233,6 +236,7 @@ public class Play extends GameState {
             joueur.addScore(((Joyau) joyau.getUserData()).getScore());
             joyaux.remove((Joyau) joyau.getUserData());
             world.destroyBody(joyau);
+            resSound.getResource("gem").play();
         }
         joyaux1.clear();
 
