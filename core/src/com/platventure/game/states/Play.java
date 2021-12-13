@@ -125,7 +125,7 @@ public class Play extends GameState {
             //remove crystals
             manageGems(dt);
 
-            if (levelManager.getCurrentSize(0) > 16) {
+            if (cameraTexture.viewportHeight < levelManager.getCurrentSize(1)*GlobalVariables.PPM) {
                 //set camera position
                 if (GlobalVariables.DEBUG)
                     setCamToPlayer(cameraDebug, false);
