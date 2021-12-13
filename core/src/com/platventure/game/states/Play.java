@@ -125,7 +125,7 @@ public class Play extends GameState {
             //remove crystals
             manageGems(dt);
 
-            if (cameraTexture.viewportHeight < levelManager.getCurrentSize(1)*GlobalVariables.PPM) {
+            if (Gdx.graphics.getHeight() < levelManager.getCurrentSize(1)*GlobalVariables.PPM) {
                 //set camera position
                 if (GlobalVariables.DEBUG)
                     setCamToPlayer(cameraDebug, false);
@@ -329,6 +329,13 @@ public class Play extends GameState {
                         break;
                 }
             }
+        }
+
+        if (Gdx.graphics.getHeight() < levelManager.getCurrentSize(1)*GlobalVariables.PPM) {
+            //set camera position
+            if (GlobalVariables.DEBUG)
+                setCamToPlayer(cameraDebug, false);
+            setCamToPlayer(cameraTexture, true);
         }
     }
 

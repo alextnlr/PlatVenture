@@ -14,7 +14,7 @@ public class LevelManager {
     private int currentLevel;
 
     public LevelManager() {
-        currentLevel = 1;
+        currentLevel = 3;
 
         levels = new HashMap<>();
 
